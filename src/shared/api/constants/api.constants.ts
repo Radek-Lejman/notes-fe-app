@@ -1,0 +1,1 @@
+export const SESSION_STALE_DURATION_MS = 1000 * 60 * 5;

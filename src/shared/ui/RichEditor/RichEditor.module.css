@@ -1,0 +1,13 @@
+.richEditor {
+  display: flex;
+  align-items: center; /* wyrównanie pionowe */
+  justify-content: space-between; /* rozciągnięcie elementów */
+}
+
+.richEditor .toolbar {
+}
+
+/* .richEditor .content {
+  padding: 12px;
+  min-height: 150px;
+} */

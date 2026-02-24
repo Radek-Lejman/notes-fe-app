@@ -1,0 +1,13 @@
+import { QueryClient } from "@tanstack/react-query";
+
+// TODO - to cnfig
+export const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 2,
+      staleTime: 1000 * 60 * 2,
+      gcTime: 1000 * 60 * 10,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
