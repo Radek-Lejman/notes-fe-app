@@ -1,26 +1,27 @@
-import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { AuthApi } from "@entities/session";
 
+type LoginCredentials = Parameters<typeof AuthApi.login>[0];
+
 export const useLogin = () => {
   const navigate = useNavigate();
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
 
-  const submitLogin = async (email: string, password: string) => {
-    try {
-      await AuthApi.login({ email, password });
+  const mutation = useMutation({
+    mutationFn: async (credentials: LoginCredentials) => {
+      return AuthApi.login(credentials);
+    },
+    onSuccess: () => {
       navigate("/");
-    } catch (err) {
-      console.error("Failed to get LOGIN :", err);
-    }
-  };
+    },
+    onError: (err) => {
+      console.error("Failed to login:", err);
+    },
+  });
 
   return {
-    username,
-    setUsername,
-    password,
-    setPassword,
-    submitLogin,
+    submitLogin: mutation.mutate,
+    isLoading: mutation.isPending,
+    error: mutation.error?.message || null,
   };
 };
