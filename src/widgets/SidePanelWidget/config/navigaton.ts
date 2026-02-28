@@ -1,4 +1,4 @@
-import type { NavItem } from "../types/SidePanelWidget.types";
+import type { NavItem } from "../model/types";
 
 export const SIDE_PANEL_NAV_ITEMS: NavItem[] = [
     {

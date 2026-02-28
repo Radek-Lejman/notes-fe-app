@@ -1,21 +1,21 @@
 import React, { type ReactNode } from 'react';
 
 interface SidePanelProps {
-  sidebarSlot: ReactNode;
-  contentSlot: ReactNode;
+  topHeader: ReactNode;
+  children: ReactNode;
 }
 
 export const SidePanel = ({
-  sidebarSlot,
-  contentSlot,
+  topHeader,
+  children,
 }: SidePanelProps): React.ReactElement => {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', backgroundColor: 'orange' }}>
       <aside style={{ width: 200 }}>
-        {sidebarSlot} 
+        {topHeader} 
       </aside>
       <main style={{ flex: 1 }}>
-        {contentSlot}
+        {children}
       </main>
     </div>
   );

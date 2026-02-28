@@ -1,5 +1,5 @@
 import type { Notes } from "@entities/notes";
-import type { NavItem } from "../types/SidePanelWidget.types";
+import type { NavItem } from "../model/types";
 
 export const mapNotesToNavItems = (notes: Notes[]): NavItem[] => {
   return notes.map((note) => ({

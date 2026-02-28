@@ -1,9 +1,6 @@
 export type SidePanelState =
-  // | { status: 'unauthenticated'; message: string } 
   | { status: 'loading'; message: string, navItems: NavItem[]  }         
-  // | { status: 'errorEmail'; message: string }
-  // | { status: 'error'; message: string; user: User }
-  | { status: 'success'; message: string; navItems: NavItem[] }; // Output
+  | { status: 'success'; message: string; navItems: NavItem[] };
 
 export type NavItem = {
   label: string;
@@ -11,7 +8,6 @@ export type NavItem = {
   path: string;
   id: string;
 };
-
 
 export interface SidePanelSectionTitleProps {
     title: string;

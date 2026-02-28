@@ -1,5 +1,5 @@
 import { Text } from "@chakra-ui/react";
-import type { SidePanelSectionTitleProps } from "../types/SidePanelWidget.types";
+import type { SidePanelSectionTitleProps } from "../../model/types";
 
 export const SidePanelSectionTitle = ({ title }: SidePanelSectionTitleProps) => {
     return (
