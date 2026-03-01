@@ -1,8 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { AuthApi } from "@entities/session";
-
-type LoginCredentials = Parameters<typeof AuthApi.login>[0];
+import type { LoginCredentials } from "../types";
 
 export const useLogin = () => {
   const navigate = useNavigate();

@@ -3,7 +3,7 @@ import type { Notes } from "../model/types";
 
 export const NotesApi = {
   getNotes: async (): Promise<Notes[]> => {
-    const { data } = await apiClient.get("/nodtes");
+    const { data } = await apiClient.get("/notes");
     return data;
   },
 

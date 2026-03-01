@@ -1,11 +1,5 @@
-import type { ReactNode } from "react";
-import { useSession, type User } from "@entities/session";
-
-export interface ShowOnlyUserProps {
-  children: (user: User) => ReactNode;
-  fallback?: ReactNode;
-}
-
+import { useSession } from "@entities/session";
+import type { ShowOnlyUserProps } from "../model/types";
 
 export const ShowOnlyUser = ({ children, fallback = null}: ShowOnlyUserProps) => {
     const { data: user } = useSession();

@@ -1,9 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { AuthApi } from "@entities/session";
-
-//  TODO move types to other folder
-type RegisterCredentials = Parameters<typeof AuthApi.register>[0];
+import type { RegisterCredentials } from "../types";
 
 export const useRegister = () => {
   const navigate = useNavigate();

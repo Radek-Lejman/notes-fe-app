@@ -1,20 +1,7 @@
 import { Flex, Stack, Box, Input, Button, Heading, Text, Spinner } from "@chakra-ui/react";
-import { useState, type ReactNode } from "react";
+import { useState } from "react";
 import { FiMail, FiLock, FiEye, FiEyeOff, FiEdit3 } from "react-icons/fi";
-import { AuthApi } from "@entities/session";
-
-
-// TODO - move to separate folder
-type LoginCredentials = Parameters<typeof AuthApi.login>[0];
-
-interface AuthFormProps {
-  mode: "Login" | "Register";
-  isLoading?: boolean;
-  error?: string | null;
-  onSubmit: (credentials: LoginCredentials) => void;
-  headerSlot?: ReactNode;
-  footerSlot?: ReactNode;
-}
+import type { AuthFormProps } from "../../model/types";
 
 export const AuthForm = ({
   mode,
