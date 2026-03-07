@@ -8,10 +8,10 @@ export const SIDE_PANEL_NAV_ITEMS: NavItem[] = [
         id: "home",
     },
     {
-        label: "Notes",
+        label: "Create note",
         icon: "file-text",
-        path: "/notes",
-        id: "notes",
+        path: "/note",
+        id: "note",
     },
     {
         label: "Settings",

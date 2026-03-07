@@ -3,6 +3,7 @@ import { LoginPageContainer, RedirectIfAuth, RegisterPageContainer, RequireAuth 
 import { Note } from "@features/manage-notes";
 import { DashboardLayout } from "@shared/ui/layouts/Dashboard/DashboardLayout";
 import { SidePanelWidget } from "@widgets/SidePanelWidget";
+import { WelcomePageContainer } from "@pages/WelcomePage";
 
 export const AppRoutes = () => {
   return (
@@ -18,8 +19,9 @@ export const AppRoutes = () => {
           />
           <Route path="/register" element={<RegisterPageContainer />} />
           <Route element={<RequireAuth><Outlet /></RequireAuth>}>
-            {/* <Route path="/" element={<WelcomePageContainer />} /> */}
+            <Route path="/" element={<WelcomePageContainer />} />
             <Route path="/note/:id" element={<Note />} />
+            <Route path="/note" element={<Note />} />
           </Route>
       </Route>
     </Routes>
