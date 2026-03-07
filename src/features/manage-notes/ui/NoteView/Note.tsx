@@ -1,100 +1,67 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import styles from "./Note.module.css";
-import RichEditor from "@shared/ui/RichEditor/RichEditor";
+import { RichEditor } from "@shared/ui/RichEditor";
+import MainLayout from "@shared/ui/layouts/MainLayout/MainLayout";
+import { DeleteNoteAction } from "../DeleteNoteAction/DeleteNoteAction";
+
+interface EditorBlock {
+  id: string;
+  content: string;
+}
 
 const Note = () => {
-  const [markdown, setMarkdown] = useState({
-    title: ``,
-    description: "",
-  });
+  const [title, setTitle] = useState("");
+  const [blocks, setBlocks] = useState<EditorBlock[]>([
+    { id: crypto.randomUUID(), content: "" },
+  ]);
 
-  const [description, setDescription] = useState("");
-
-  function handleDescriptionChange(e: React.ChangeEvent<HTMLInputElement>) {
-    //   console.log("content", e.target.value);
-
-    setDescription(e.target.innerText); // <--- odpowiednik value
-  }
-
-  // const handleDescriptionChange = (
-  //   e: React.ChangeEvent<HTMLTextAreaElement>
-  // ) => {
-  //   console.log("content", e.target.value);
-  //   setMarkdown((prev) => ({ ...prev, description: e.target.value }));
-  // };
-  const handleTitleChange = (e: string) => {
-    console.log("title ", e);
-    setMarkdown((prev) => ({ ...prev, title: e }));
+  const handleContentChange = (id: string, newContent: string) => {
+    setBlocks((prev) =>
+      prev.map((block) =>
+        block.id === id ? { ...block, content: newContent } : block
+      )
+    );
   };
 
-  const handleContentChange = (e: string) => {
-    console.log("title ", e);
-    setMarkdown((prev) => ({ ...prev, description: e }));
+  const handleAddBlock = (index: number) => {
+    setBlocks((prev) => {
+      const newBlocks = [...prev];
+      newBlocks.splice(index + 1, 0, { id: crypto.randomUUID(), content: "" });
+      return newBlocks;
+    });
   };
 
   return (
-    <div className={styles.container}>
-      <div className={styles.editorSection}>
-        {/* <div contentEditable={true}>
-          <h1
-            className={styles.titleInput}
-            contentEditable={true}
-            data-text="# Hello Markdown 👋"
-          ></h1>
+    <MainLayout
+      title="Edit Note"
+      headerActions={<DeleteNoteAction noteId="temp-123" />}
+    >
+      <div className={styles.container}>
+        <div className={styles.editorSection}>
+
+          <RichEditor.Title
+            value={title}
+            onChange={setTitle}
+            onEnter={() => handleAddBlock(-1)}
+            placeholder="Note Title"
+          />
+
+          {blocks.map((block, index) => (
+            <RichEditor.Root
+              key={block.id}
+              value={block.content}
+              onChange={(val) => handleContentChange(block.id, val)}
+              onEnter={() => handleAddBlock(index)}
+              autoFocus={true} 
+              placeholder="Type '/' for commands"
+            >
+              <RichEditor.Dropdown />
+              <RichEditor.Content />
+            </RichEditor.Root>
+          ))}
         </div>
-
-        <div
-          contentEditable={true}
-          className="content"
-          data-text="Write your markdown here..."
-          onInput={handleDescriptionChange}
-        ></div> */}
-        {/* 
-        <Editable
-          value={markdown.title}
-          onChange={handleTitleChange}
-          placeholder="# Hello Markdown 👋"
-          className="title"
-        />
-
-        <Editable
-          value={markdown.description}
-          onChange={handleContentChange}
-          placeholder="Write your markdown here..."
-          className={styles.title}
-        /> */}
-
-        <RichEditor
-          tag="h2"
-          value="# Hello Markdown 👋"
-          onChange={handleContentChange}
-          placeholder="Write your markdown here..."
-          // className={styles.title}
-        />
-        <RichEditor
-          tag="p"
-          value="Write your markdown here..."
-          onChange={handleContentChange}
-          placeholder="Write your markdown here..."
-        />
-
-        {/* <input
-          className={styles.titleInput}
-          value={markdown.title}
-          onChange={handleTitleChange}
-        />
-        <br />
-        <textarea
-          className={styles.editor}
-          value={markdown.description}
-          // onChange={handleDescriptionChange}
-          placeholder=""
-        /> */}
       </div>
-      <div className={styles.actionButtons}>
-        <button>Check grammar</button>
-      </div>
-    </div>
+    </MainLayout>
   );
 };
 
