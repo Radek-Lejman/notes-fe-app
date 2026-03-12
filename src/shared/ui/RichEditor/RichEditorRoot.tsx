@@ -1,13 +1,12 @@
-import React, { createContext, useContext } from "react";
-import { Editor, useEditor } from "@tiptap/react";
+import { createContext, useContext } from "react";
+import { useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
 import { TextStyleKit } from "@tiptap/extension-text-style";
 import styles from "./RichEditor.module.css";
-
-interface RichEditorContextValue {
-  editor: Editor | null;
-}
+import { SlashCommand } from "../../lib/editor/extensions/SlashCommand";
+import { suggestionOptionsAdapter } from "../../lib/editor/extensions/suggestion";
+import { type RichEditorContextValue, type RootProps } from "./types";
 
 const RichEditorContext = createContext<RichEditorContextValue | null>(null);
 
@@ -19,20 +18,9 @@ export const useRichEditorContext = () => {
   return context;
 };
 
-interface RootProps {
-  value: string;
-  onChange: (val: string) => void;
-  onEnter?: () => void;
-  autoFocus?: boolean;
-  placeholder?: string;
-  className?: string;
-  children: React.ReactNode;
-}
-
 export const RichEditorRoot = ({
   value = "",
   onChange,
-  onEnter,
   autoFocus = false,
   placeholder = "Write something...",
   className = "",
@@ -43,24 +31,21 @@ export const RichEditorRoot = ({
       TextStyleKit,
       StarterKit,
       Placeholder.configure({ placeholder }),
+      SlashCommand.configure({
+        suggestion: suggestionOptionsAdapter,
+      }),
     ],
     content: value,
     editable: true,
     autofocus: autoFocus,
     immediatelyRender: false,
     editorProps: {
-      handleKeyDown: (_, event) => {
-        if (event.key === "Enter" && !event.shiftKey) {
-          if (onEnter) {
-            onEnter();
-            return true;
-          }
-        }
-        return false;
+      attributes: {
+        class: styles.proseMirrorWrapper,
       },
     },
     onUpdate: ({ editor }) => {
-      onChange(editor.getHTML());
+      onChange(JSON.stringify(editor.getJSON()));
     },
   });
 

@@ -1,13 +1,13 @@
 import { RichEditorRoot } from "./RichEditorRoot";
 import { RichEditorContent } from "./RichEditorContent";
-import { RichEditorDropdown } from "./RichEditorDropdown";
 import { RichEditorTitle } from "./RichEditorTitle";
+import { RichEditorBubbleMenu } from "./RichEditorBubbleMenu";
 
 export const RichEditor = {
   Root: RichEditorRoot,
   Content: RichEditorContent,
-  Dropdown: RichEditorDropdown,
   Title: RichEditorTitle,
+  BubbleMenu: RichEditorBubbleMenu,
 };
 
 export { useRichEditorContext } from "./RichEditorRoot";

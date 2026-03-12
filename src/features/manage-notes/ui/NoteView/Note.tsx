@@ -4,31 +4,14 @@ import { RichEditor } from "@shared/ui/RichEditor";
 import MainLayout from "@shared/ui/layouts/MainLayout/MainLayout";
 import { DeleteNoteAction } from "../DeleteNoteAction/DeleteNoteAction";
 
-interface EditorBlock {
-  id: string;
-  content: string;
-}
+
 
 const Note = () => {
   const [title, setTitle] = useState("");
-  const [blocks, setBlocks] = useState<EditorBlock[]>([
-    { id: crypto.randomUUID(), content: "" },
-  ]);
+  const [content, setContent] = useState("");
 
-  const handleContentChange = (id: string, newContent: string) => {
-    setBlocks((prev) =>
-      prev.map((block) =>
-        block.id === id ? { ...block, content: newContent } : block
-      )
-    );
-  };
-
-  const handleAddBlock = (index: number) => {
-    setBlocks((prev) => {
-      const newBlocks = [...prev];
-      newBlocks.splice(index + 1, 0, { id: crypto.randomUUID(), content: "" });
-      return newBlocks;
-    });
+  const handleContentChange = (newContent: string) => {
+    setContent(newContent);
   };
 
   return (
@@ -42,23 +25,18 @@ const Note = () => {
           <RichEditor.Title
             value={title}
             onChange={setTitle}
-            onEnter={() => handleAddBlock(-1)}
             placeholder="Note Title"
           />
 
-          {blocks.map((block, index) => (
             <RichEditor.Root
-              key={block.id}
-              value={block.content}
-              onChange={(val) => handleContentChange(block.id, val)}
-              onEnter={() => handleAddBlock(index)}
+              value={content}
+              onChange={handleContentChange}
               autoFocus={true} 
               placeholder="Type '/' for commands"
             >
-              <RichEditor.Dropdown />
+              <RichEditor.BubbleMenu />
               <RichEditor.Content />
             </RichEditor.Root>
-          ))}
         </div>
       </div>
     </MainLayout>

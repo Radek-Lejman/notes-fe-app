@@ -1,19 +1,12 @@
 import { Textarea } from "@chakra-ui/react";
 import styles from "./RichEditor.module.css";
 import React from "react";
-
-interface RichEditorTitleProps {
-  value: string;
-  onChange: (value: string) => void;
-  onEnter?: () => void;
-  placeholder?: string;
-}
+import { type RichEditorTitleProps } from "./types";
 
 export const RichEditorTitle = ({ value, onChange, onEnter, placeholder = "Title" }: RichEditorTitleProps) => {
   const handleInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     onChange(e.target.value);
     
-    // Auto-resize logic
     e.target.style.height = 'auto';
     e.target.style.height = `${e.target.scrollHeight}px`;
   };

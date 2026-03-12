@@ -1,4 +1,4 @@
-import { Editor } from "@tiptap/react";
+import { type Editor } from "@tiptap/core";
 
 export const handleEditorAction = (editor: Editor, editorType: string | undefined) => {
   if (!editorType) return;
