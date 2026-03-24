@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import type { SidePanelWidgetNavItemsProps } from "../model/types";
+import type { SidePanelWidgetNavItemsProps } from "../../model/types";
 
 
 export const SidePanelWidgetNavItems = ({ items }: SidePanelWidgetNavItemsProps) => {
