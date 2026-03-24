@@ -9,9 +9,6 @@ export type NavItem = {
   id: string;
 };
 
-export interface SidePanelSectionTitleProps {
-    title: string;
-}
 
 export interface SidePanelWidgetNavItemsProps {
   items: NavItem[];
