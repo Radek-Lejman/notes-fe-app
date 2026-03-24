@@ -5,4 +5,5 @@ export * from "./api/hooks/useGetNote";
 export * from "./api/hooks/useGetNotes";
 export * from "./api/hooks/useSearchNote";
 export * from "./api/hooks/useCreateNote";
+export * from "./api/hooks/useUpdateNote";
 export * from "./model/types";

@@ -5,7 +5,7 @@ export const mapNotesToNavItems = (notes: Notes[]): NavItem[] => {
   return notes.map((note) => ({
     label: note.title,
     icon: 'FileText',
-    path: `/notes/${note.id}`,
+    path: `/note/${note.id}`,
     id: note.id,
   }));
 };

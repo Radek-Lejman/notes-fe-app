@@ -1,4 +1,4 @@
-import { type Editor } from "@tiptap/react";
+import { type Editor, type JSONContent } from "@tiptap/react";
 import React from "react";
 
 export interface RichEditorContextValue {
@@ -6,8 +6,8 @@ export interface RichEditorContextValue {
 }
 
 export interface RootProps {
-  value: string;
-  onChange: (val: string) => void;
+  value: JSONContent;
+  onChange: (val: JSONContent) => void;
   autoFocus?: boolean;
   placeholder?: string;
   className?: string;

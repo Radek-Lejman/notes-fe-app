@@ -19,7 +19,7 @@ export const useRichEditorContext = () => {
 };
 
 export const RichEditorRoot = ({
-  value = "",
+  value = {},
   onChange,
   autoFocus = false,
   placeholder = "Write something...",
@@ -45,7 +45,7 @@ export const RichEditorRoot = ({
       },
     },
     onUpdate: ({ editor }) => {
-      onChange(JSON.stringify(editor.getJSON()));
+      onChange(editor.getJSON());
     },
   });
 
