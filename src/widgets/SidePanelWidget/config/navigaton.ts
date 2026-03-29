@@ -18,11 +18,5 @@ export const SIDE_PANEL_NAV_ITEMS: NavItem[] = [
         icon: "cog",
         path: "/settings",
         id: "settings",
-    },
-    {
-        label: "Search",
-        icon: "search",
-        path: "/search",
-        id: "search",
     }
 ];

@@ -7,3 +7,4 @@ export * from "./api/hooks/useSearchNote";
 export * from "./api/hooks/useCreateNote";
 export * from "./api/hooks/useUpdateNote";
 export * from "./model/types";
+export * from "./api/hooks/useSearchNotes";
