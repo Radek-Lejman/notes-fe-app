@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useSearchNotes } from "@/entities/notes";
 import { useDebounce } from "@/shared/lib/hooks/useDebounce";
 import type { SearchFilters } from "../model/types";
@@ -14,15 +14,17 @@ export function useNoteSearch(initialFilters: SearchFilters = DEFAULT_SEARCH_FIL
     debouncedQuery.trim().length > 0
   );
 
-  return {
+  const setFiltersMemoized = (newFilters: Partial<SearchFilters>) => setFilters((prev) => ({ ...prev, ...newFilters }));
+
+  return useMemo(() => ({
     query,
     setQuery,
     debouncedQuery,
     filters,
-    setFilters: (newFilters: Partial<SearchFilters>) => setFilters((prev) => ({ ...prev, ...newFilters })),
+    setFilters: setFiltersMemoized,
     results: data || [],
     isLoading,
     isError,
     error,
-  };
+  }), [query, debouncedQuery, filters, data, isLoading, isError, error]);
 }

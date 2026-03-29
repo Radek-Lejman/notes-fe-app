@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { Dialog, Button } from "@chakra-ui/react";
 import { FaSearch } from "react-icons/fa";
 import { NoteSearch } from "@/features/note-search";
 
 export function GlobalSearchWidget() {
   const [isOpen, setIsOpen] = useState(false);
+
+  const handleItemSelect = useCallback(() => setIsOpen(false), []);
 
   return (
     <Dialog.Root placement="top" open={isOpen} onOpenChange={(e) => setIsOpen(e.open)}>
@@ -18,7 +20,7 @@ export function GlobalSearchWidget() {
       
       <Dialog.Positioner>
         <Dialog.Content maxW="600px" mt="10vh" bg="white" borderRadius="xl" p={5} boxShadow="2xl">
-          <NoteSearch.Root onItemSelect={() => setIsOpen(false)}>
+          <NoteSearch.Root onItemSelect={handleItemSelect}>
             <NoteSearch.Input placeholder="Search notes..." />
             <NoteSearch.Filters />
             <NoteSearch.Results />
