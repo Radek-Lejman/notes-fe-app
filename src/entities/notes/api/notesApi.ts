@@ -1,6 +1,5 @@
 import { apiClient } from "@shared/api/axios/client";
-import type { Notes, SearchNotesParams } from "../model/types";
-import type { JSONContent } from "@tiptap/core";
+import type { Notes, SearchNotesParams, CreateNoteDto, UpdateNoteDto } from "../model/types";
 
 export const NotesApi = {
   getNotes: async (): Promise<Notes[]> => {
@@ -13,12 +12,12 @@ export const NotesApi = {
     return data;
   },
 
-  createNote: async (payload: { title: string; content: JSONContent }) => {
+  createNote: async (payload: CreateNoteDto) => {
     const { data } = await apiClient.post("/notes", payload);
     return data;
   },
 
-  updateNote: async (payload: { id: string; title: string; content: JSONContent | null }) => {
+  updateNote: async (payload: UpdateNoteDto) => {
     const { id, ...dataPayload } = payload;
     const { data } = await apiClient.patch(`/notes/${id}`, dataPayload);
     return data;

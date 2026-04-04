@@ -1,11 +1,11 @@
-import { createContext, useContext } from "react";
+import { createContext, useContext, useEffect } from "react";
 import { useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
 import { TextStyleKit } from "@tiptap/extension-text-style";
 import styles from "./RichEditor.module.css";
 import { SlashCommand } from "../../lib/editor/extensions/SlashCommand";
-import { suggestionOptionsAdapter } from "../../lib/editor/extensions/suggestion";
+import { createSuggestionOptions } from "../../lib/editor/extensions/suggestion";
 import { type RichEditorContextValue, type RootProps } from "./types";
 
 const RichEditorContext = createContext<RichEditorContextValue | null>(null);
@@ -25,14 +25,17 @@ export const RichEditorRoot = ({
   placeholder = "Write something...",
   className = "",
   children,
+  customSlashItems = [],
+  extensions = [],
 }: RootProps) => {
   const editor = useEditor({
     extensions: [
+      ...extensions,
       TextStyleKit,
       StarterKit,
       Placeholder.configure({ placeholder }),
       SlashCommand.configure({
-        suggestion: suggestionOptionsAdapter,
+        suggestion: createSuggestionOptions(customSlashItems),
       }),
     ],
     content: value,
@@ -44,10 +47,18 @@ export const RichEditorRoot = ({
         class: styles.proseMirrorWrapper,
       },
     },
-    onUpdate: ({ editor }) => {
-      onChange(editor.getJSON());
-    },
   });
+
+  useEffect(() => {
+    if (!editor) return;
+    const handleUpdate = () => {
+      onChange(editor.getJSON());
+    };
+    editor.on("update", handleUpdate);
+    return () => {
+      editor.off("update", handleUpdate);
+    };
+  }, [editor, onChange]);
 
   return (
     <RichEditorContext.Provider value={{ editor }}>

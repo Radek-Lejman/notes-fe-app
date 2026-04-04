@@ -1,5 +1,5 @@
 import { useCreateNote } from "@entities/notes";
-import { NoteEditorForm } from "@features/manage-notes";
+import { NoteEditorForm } from "@features/manage-notes/ui/NoteEditorForm/NoteEditorForm";
 import { type JSONContent } from "@tiptap/react";
 import type { NoteCreateWidgetProps } from "../model/types";
 

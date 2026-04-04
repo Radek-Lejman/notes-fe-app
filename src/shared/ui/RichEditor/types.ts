@@ -1,8 +1,14 @@
-import { type Editor, type JSONContent } from "@tiptap/react";
+import { type Editor, type Extensions, type JSONContent } from "@tiptap/react";
 import React from "react";
 
 export interface RichEditorContextValue {
   editor: Editor | null;
+}
+
+export interface CustomSlashMenuItem {
+  label: string;
+  value: string;
+  action: (editor: Editor) => void;
 }
 
 export interface RootProps {
@@ -12,6 +18,8 @@ export interface RootProps {
   placeholder?: string;
   className?: string;
   children: React.ReactNode;
+  customSlashItems?: CustomSlashMenuItem[];
+  extensions?: Extensions;
 }
 
 export interface RichEditorTitleProps {

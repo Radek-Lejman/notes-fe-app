@@ -6,10 +6,17 @@ import { handleEditorAction } from "../../editorActions";
 import { richEditorMenu } from "../../../config/editor/menu.config";
 import { Editor, type Range } from "@tiptap/core";
 import { type SuggestionProps, type SuggestionKeyDownProps } from "@tiptap/suggestion";
+import type { CustomSlashMenuItem } from "../../../ui/RichEditor/types";
 
-export const suggestionOptionsAdapter = {
+export const createSuggestionOptions = (customItems: CustomSlashMenuItem[] = []) => ({
   items: ({ query }: { query: string }) => {
-    return richEditorMenu.menu
+    // Combine default and custom items
+    const allItems = [
+      ...customItems,
+      ...richEditorMenu.menu,
+    ];
+
+    return allItems
       .filter((item) =>
         item.label.toLowerCase().includes(query.toLowerCase())
       )
@@ -18,7 +25,12 @@ export const suggestionOptionsAdapter = {
         ...item,
         command: ({ editor, range }: { editor: Editor; range: Range }) => {
           editor.chain().focus().deleteRange(range).run();
-          handleEditorAction(editor, item.value);
+          
+          if ('action' in item && typeof item.action === 'function') {
+            item.action(editor);
+          } else {
+            handleEditorAction(editor, item.value);
+          }
         },
       }));
   },
@@ -78,4 +90,4 @@ export const suggestionOptionsAdapter = {
       },
     };
   },
-};
+});
