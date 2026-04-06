@@ -16,7 +16,7 @@ export const noteQueries = {
 
   search: (text: string) => queryOptions({
     queryKey: noteKeys.notes.search(text),
-    queryFn: () => NotesApi.searchNote({ text }),
+    queryFn: () => NotesApi.searchNote({ q: text }),
     enabled: text.length > 2, 
   }),
 };

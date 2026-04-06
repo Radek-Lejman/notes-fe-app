@@ -1,22 +1,23 @@
-import type { AxiosError, AxiosInstance } from "axios";
+import type { AxiosError, AxiosInstance, InternalAxiosRequestConfig } from "axios";
 import { isApiErrorResponseData } from "../../lib/typeGuards";
+import { ApiError } from "../lib/ApiError";
+import { RefreshQueueManager } from "../lib/RefreshQueueManager";
+import { handle401Error } from "../handlers/handle401Error";
+import type { SetupErrorInterceptorOptions } from "./types";
 
-export class ApiError extends Error {
-  status: number;
-  details?: unknown;
+const refreshManager = new RefreshQueueManager();
 
-  constructor(status: number, message: string, details?: unknown) {
-    super(message);
-    this.name = "ApiError";
-    this.status = status;
-    this.details = details;
-  }
-}
-
-export const setupErrorInterceptor = (client: AxiosInstance) => {
+export const setupErrorInterceptor = (
+  client: AxiosInstance,
+  options: SetupErrorInterceptorOptions = {}
+) => {
   client.interceptors.response.use(
     (res) => res,
-    (error: AxiosError) => {
+    async (error: AxiosError) => {
+      const originalRequest = error.config as InternalAxiosRequestConfig & {
+        _retry?: boolean;
+      };
+
       const responseData = error.response?.data;
       const message = isApiErrorResponseData(responseData)
         ? responseData.message ?? error.message ?? "Unknown API error"
@@ -28,8 +29,17 @@ export const setupErrorInterceptor = (client: AxiosInstance) => {
         responseData
       );
 
-      console.error("API Error:", apiError);
+      if (apiError.status === 401) {
+        return handle401Error({
+          client,
+          originalRequest,
+          apiError,
+          options,
+          refreshManager,
+        });
+      }
 
+      console.error("API Error:", apiError);
       return Promise.reject(apiError);
     }
   );

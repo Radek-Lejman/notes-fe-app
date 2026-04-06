@@ -1,7 +1,6 @@
 import axios from "axios";
-import { setupAuthInterceptor } from "./interceptors/auth.interceptor";
 import { setupErrorInterceptor } from "./interceptors/error.interceptor";
-
+import { queryClient } from "../queryClient";
 
 export const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_URL ?? "http://localhost:3000/api",
@@ -11,7 +10,10 @@ export const apiClient = axios.create({
     "Content-Type": "application/json",
   },
 });
-
 // Attach interceptors
-setupAuthInterceptor(apiClient);
-setupErrorInterceptor(apiClient);
+setupErrorInterceptor(apiClient, {
+  refreshFn: () => apiClient.post("/auth/refresh"),
+  onUnauthorized: () => {
+    queryClient.clear();
+  },
+});
