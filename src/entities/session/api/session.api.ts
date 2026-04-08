@@ -19,7 +19,9 @@ export const AuthApi = {
   },
 
   me: async (): Promise<User> => {
-    const { data } = await apiClient.get("/auth/me");
+    const { data } = await apiClient.get("/auth/me", {
+      _skipAuthRefresh: true,
+    });
     return data;
   },
 

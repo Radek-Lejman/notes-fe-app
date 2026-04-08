@@ -14,9 +14,7 @@ export const setupErrorInterceptor = (
   client.interceptors.response.use(
     (res) => res,
     async (error: AxiosError) => {
-      const originalRequest = error.config as InternalAxiosRequestConfig & {
-        _retry?: boolean;
-      };
+      const originalRequest = error.config as InternalAxiosRequestConfig;
 
       const responseData = error.response?.data;
       const message = isApiErrorResponseData(responseData)
@@ -29,7 +27,7 @@ export const setupErrorInterceptor = (
         responseData
       );
 
-      if (apiError.status === 401) {
+      if (apiError.status === 401 && !originalRequest._skipAuthRefresh) {
         return handle401Error({
           client,
           originalRequest,

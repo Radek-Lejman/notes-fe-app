@@ -5,7 +5,7 @@ import type { SetupErrorInterceptorOptions } from "../interceptors/types";
 
 export interface AuthHandlerContext {
   client: AxiosInstance;
-  originalRequest: InternalAxiosRequestConfig & { _retry?: boolean };
+  originalRequest: InternalAxiosRequestConfig;
   apiError: ApiError;
   options: SetupErrorInterceptorOptions;
   refreshManager: RefreshQueueManager;
