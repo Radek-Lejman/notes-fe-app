@@ -1,4 +1,4 @@
-import type { JSONContent } from "@tiptap/core";
+import type { JSONContent } from '@tiptap/core';
 
 export interface CreateNoteDto {
   title: string;
@@ -24,12 +24,12 @@ export interface SearchNotesParams {
   limit?: number;
   fields?: string;
   order?:
-    | "rank"
-    | "-rank"
-    | "createdAt"
-    | "-createdAt"
-    | "title"
-    | "-title"
-    | "updatedAt"
-    | "-updatedAt";
+    | 'rank'
+    | '-rank'
+    | 'createdAt'
+    | '-createdAt'
+    | 'title'
+    | '-title'
+    | 'updatedAt'
+    | '-updatedAt';
 }

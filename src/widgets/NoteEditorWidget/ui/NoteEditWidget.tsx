@@ -1,10 +1,10 @@
-import { useGetNote, useUpdateNote, useCreateNote } from "@entities/notes";
-import { NoteEditorForm, useNestedNotePlugin, NestedNoteCreator } from "@features/manage-notes";
-import { type JSONContent } from "@tiptap/react";
-import { Text } from "@chakra-ui/react";
-import type { NoteEditWidgetProps } from "../model/types";
-import { useNavigate } from "react-router-dom";
-import { parseContent } from "@shared/lib/editor/parseContent";
+import { useGetNote, useUpdateNote, useCreateNote } from '@entities/notes';
+import { NoteEditorForm, useNestedNotePlugin, NestedNoteCreator } from '@features/manage-notes';
+import { type JSONContent } from '@tiptap/react';
+import { Text } from '@chakra-ui/react';
+import type { NoteEditWidgetProps } from '../model/types';
+import { useNavigate } from 'react-router-dom';
+import { parseContent } from '@shared/lib/editor/parseContent';
 
 export const NoteEditWidget = ({ noteId }: NoteEditWidgetProps) => {
   const { data: note } = useGetNote(noteId);
@@ -19,7 +19,7 @@ export const NoteEditWidget = ({ noteId }: NoteEditWidgetProps) => {
   const handlePageCreateRequest = async (title: string) => {
     const newNote = await createNote.mutateAsync({
       title,
-      content: { type: "doc", content: [] },
+      content: { type: 'doc', content: [] },
       parentId: noteId,
     });
     return { id: newNote.id, title: newNote.title };
@@ -48,7 +48,7 @@ export const NoteEditWidget = ({ noteId }: NoteEditWidgetProps) => {
       editorExtensions={nestedNotePlugin.extensions}
       slashMenuItems={nestedNotePlugin.slashMenuItems}
       editorOverlays={
-        <NestedNoteCreator 
+        <NestedNoteCreator
           isOpen={nestedNotePlugin.isOverlayOpen}
           onClose={nestedNotePlugin.closeOverlay}
           onNestedNoteCreateRequest={handlePageCreateRequest}

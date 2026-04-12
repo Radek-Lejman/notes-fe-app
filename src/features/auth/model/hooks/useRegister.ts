@@ -1,7 +1,7 @@
-import { useMutation } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
-import { AuthApi } from "@entities/session";
-import type { RegisterCredentials } from "../types";
+import { useMutation } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
+import { AuthApi } from '@entities/session';
+import type { RegisterCredentials } from '../types';
 
 export const useRegister = () => {
   const navigate = useNavigate();
@@ -11,10 +11,10 @@ export const useRegister = () => {
       return AuthApi.register(credentials);
     },
     onSuccess: () => {
-      void navigate("/");
+      void navigate('/');
     },
     onError: (err) => {
-      console.error("Failed to register:", err);
+      console.error('Failed to register:', err);
     },
   });
 

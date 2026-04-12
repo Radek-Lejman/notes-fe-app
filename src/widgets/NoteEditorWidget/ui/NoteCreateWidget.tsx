@@ -1,7 +1,7 @@
-import { useCreateNote } from "@entities/notes";
-import { NoteEditorForm } from "@features/manage-notes";
-import { type JSONContent } from "@tiptap/react";
-import type { NoteCreateWidgetProps } from "../model/types";
+import { useCreateNote } from '@entities/notes';
+import { NoteEditorForm } from '@features/manage-notes';
+import { type JSONContent } from '@tiptap/react';
+import type { NoteCreateWidgetProps } from '../model/types';
 
 export const NoteCreateWidget = ({ onNoteCreated }: NoteCreateWidgetProps) => {
   const createNote = useCreateNote();
@@ -13,7 +13,7 @@ export const NoteCreateWidget = ({ onNoteCreated }: NoteCreateWidgetProps) => {
         onSuccess: (newNote) => {
           onNoteCreated(newNote.id);
         },
-      }
+      },
     );
   };
 

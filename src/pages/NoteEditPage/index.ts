@@ -1,1 +1,1 @@
-export { NoteEditPage } from "./ui/NoteEditPage";
+export { NoteEditPage } from './ui/NoteEditPage';

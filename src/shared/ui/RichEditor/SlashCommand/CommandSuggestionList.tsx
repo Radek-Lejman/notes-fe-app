@@ -1,17 +1,11 @@
-import {
-  useState,
-  useEffect,
-  forwardRef,
-  useImperativeHandle,
-  useRef,
-} from "react";
-import { Box, Button, Text } from "@chakra-ui/react";
-import {
-  type CommandSuggestionListProps,
-  type CommandSuggestionListRef,
-} from "./types";
+import { useState, useEffect, forwardRef, useImperativeHandle, useRef } from 'react';
+import { Box, Button, Text } from '@chakra-ui/react';
+import { type CommandSuggestionListProps, type CommandSuggestionListRef } from './types';
 
-export const CommandSuggestionList = forwardRef<CommandSuggestionListRef, CommandSuggestionListProps>((props, ref) => {
+export const CommandSuggestionList = forwardRef<
+  CommandSuggestionListRef,
+  CommandSuggestionListProps
+>((props, ref) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const itemRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
@@ -23,9 +17,7 @@ export const CommandSuggestionList = forwardRef<CommandSuggestionListRef, Comman
   };
 
   const upHandler = () => {
-    setSelectedIndex(
-      (selectedIndex + props.items.length - 1) % props.items.length
-    );
+    setSelectedIndex((selectedIndex + props.items.length - 1) % props.items.length);
   };
 
   const downHandler = () => {
@@ -43,23 +35,23 @@ export const CommandSuggestionList = forwardRef<CommandSuggestionListRef, Comman
   useEffect(() => {
     if (itemRefs.current[selectedIndex]) {
       itemRefs.current[selectedIndex]?.scrollIntoView({
-        block: "nearest",
-        behavior: "smooth"
+        block: 'nearest',
+        behavior: 'smooth',
       });
     }
   }, [selectedIndex]);
 
   useImperativeHandle(ref, () => ({
     onKeyDown: ({ event }: { event: KeyboardEvent }) => {
-      if (event.key === "ArrowUp") {
+      if (event.key === 'ArrowUp') {
         upHandler();
         return true;
       }
-      if (event.key === "ArrowDown") {
+      if (event.key === 'ArrowDown') {
         downHandler();
         return true;
       }
-      if (event.key === "Enter") {
+      if (event.key === 'Enter') {
         enterHandler();
         return true;
       }
@@ -85,16 +77,18 @@ export const CommandSuggestionList = forwardRef<CommandSuggestionListRef, Comman
         props.items.map((item, index) => (
           <Button
             key={index}
-            ref={(el) => { itemRefs.current[index] = el; }}
+            ref={(el) => {
+              itemRefs.current[index] = el;
+            }}
             variant="ghost"
             justifyContent="flex-start"
             size="sm"
-            fontWeight={index === selectedIndex ? "medium" : "normal"}
-            bg={index === selectedIndex ? "gray.100" : "transparent"}
-            color={index === selectedIndex ? "gray.900" : "gray.700"}
+            fontWeight={index === selectedIndex ? 'medium' : 'normal'}
+            bg={index === selectedIndex ? 'gray.100' : 'transparent'}
+            color={index === selectedIndex ? 'gray.900' : 'gray.700'}
             _hover={{
-              bg: "gray.100",
-              color: "gray.900",
+              bg: 'gray.100',
+              color: 'gray.900',
             }}
             onClick={() => selectItem(index)}
           >
@@ -110,4 +104,4 @@ export const CommandSuggestionList = forwardRef<CommandSuggestionListRef, Comman
   );
 });
 
-CommandSuggestionList.displayName = "CommandSuggestionList";
+CommandSuggestionList.displayName = 'CommandSuggestionList';

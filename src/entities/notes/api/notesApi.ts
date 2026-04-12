@@ -1,9 +1,9 @@
-import { apiClient } from "@shared/api/axios/client";
-import type { Notes, SearchNotesParams, CreateNoteDto, UpdateNoteDto } from "../model/types";
+import { apiClient } from '@shared/api/axios/client';
+import type { Notes, SearchNotesParams, CreateNoteDto, UpdateNoteDto } from '../model/types';
 
 export const NotesApi = {
   getNotes: async (): Promise<Notes[]> => {
-    const { data } = await apiClient.get<Notes[]>("/notes");
+    const { data } = await apiClient.get<Notes[]>('/notes');
     return data;
   },
 
@@ -13,7 +13,7 @@ export const NotesApi = {
   },
 
   createNote: async (payload: CreateNoteDto): Promise<Notes> => {
-    const { data } = await apiClient.post<Notes>("/notes", payload);
+    const { data } = await apiClient.post<Notes>('/notes', payload);
     return data;
   },
 
@@ -24,7 +24,7 @@ export const NotesApi = {
   },
 
   searchNote: async (payload: SearchNotesParams): Promise<Notes[]> => {
-    const { data } = await apiClient.get<Notes[]>("/notes/search", {
+    const { data } = await apiClient.get<Notes[]>('/notes/search', {
       params: payload,
     });
     return data;

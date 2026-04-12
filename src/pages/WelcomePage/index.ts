@@ -1,1 +1,1 @@
-export { WelcomePageContainer } from "./ui/WelcomePageContainer";
+export { WelcomePageContainer } from './ui/WelcomePageContainer';

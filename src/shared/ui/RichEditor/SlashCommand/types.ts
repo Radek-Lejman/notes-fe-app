@@ -1,4 +1,4 @@
-import { type Editor, type Range } from "@tiptap/core";
+import { type Editor, type Range } from '@tiptap/core';
 
 export interface CommandItem {
   value: string;

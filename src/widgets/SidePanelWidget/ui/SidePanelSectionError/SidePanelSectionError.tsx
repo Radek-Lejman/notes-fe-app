@@ -1,5 +1,3 @@
 export const SidePanelError = () => {
-    return (
-        <div>Error</div>
-    )
-}
+  return <div>Error</div>;
+};

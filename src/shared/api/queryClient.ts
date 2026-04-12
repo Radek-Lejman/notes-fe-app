@@ -1,5 +1,5 @@
-import { QueryClient } from "@tanstack/react-query";
-import { MINUTE_IN_MS } from "../lib/utils/time";
+import { QueryClient } from '@tanstack/react-query';
+import { MINUTE_IN_MS } from '../lib/utils/time';
 
 export const queryClient = new QueryClient({
   defaultOptions: {

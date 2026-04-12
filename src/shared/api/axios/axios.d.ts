@@ -5,7 +5,7 @@ declare module 'axios' {
     _skipAuthRefresh?: boolean;
     _retry?: boolean;
   }
-  
+
   export interface InternalAxiosRequestConfig {
     _skipAuthRefresh?: boolean;
     _retry?: boolean;

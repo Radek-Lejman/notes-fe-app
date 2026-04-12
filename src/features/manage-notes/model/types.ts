@@ -1,11 +1,11 @@
-import { type Extensions, type JSONContent } from "@tiptap/react";
-import type { CustomSlashMenuItem } from "@shared/ui/RichEditor/types";
+import { type Extensions, type JSONContent } from '@tiptap/react';
+import type { CustomSlashMenuItem } from '@shared/ui/RichEditor/types';
 
-export type InlinePageCreationState = 
+export type InlinePageCreationState =
   | { status: 'idle' }
   | { status: 'creating' }
-  | { status: 'success', noteId: string }
-  | { status: 'error', error: string };
+  | { status: 'success'; noteId: string }
+  | { status: 'error'; error: string };
 
 export interface NoteEditorFormProps {
   initialTitle: string;
@@ -16,7 +16,6 @@ export interface NoteEditorFormProps {
   slashMenuItems?: CustomSlashMenuItem[];
   editorOverlays?: React.ReactNode;
 }
-
 
 export interface NestedNotePluginProps {
   onNestedNoteNavigateRequest?: (id: string) => void;

@@ -1,9 +1,9 @@
-import { useParams, useNavigate } from "react-router-dom";
-import MainLayout from "@shared/ui/layouts/MainLayout/MainLayout";
-import { Flex, Spinner } from "@chakra-ui/react";
-import { Suspense } from "react";
-import { NoteEditWidget, NoteCreateWidget } from "@widgets/NoteEditorWidget";
-import { DeleteNoteAction } from "@features/manage-notes";
+import { useParams, useNavigate } from 'react-router-dom';
+import MainLayout from '@shared/ui/layouts/MainLayout/MainLayout';
+import { Flex, Spinner } from '@chakra-ui/react';
+import { Suspense } from 'react';
+import { NoteEditWidget, NoteCreateWidget } from '@widgets/NoteEditorWidget';
+import { DeleteNoteAction } from '@features/manage-notes';
 
 export const NoteEditPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -22,17 +22,16 @@ export const NoteEditPage = () => {
   }
 
   return (
-    <Suspense fallback={
-      <MainLayout title="Loading Note...">
-        <Flex justify="center" align="center" h="100%">
-          <Spinner />
-        </Flex>
-      </MainLayout>
-    }>
-      <MainLayout
-        title="Edit Note"
-        headerActions={<DeleteNoteAction noteId={id} />}
-      >
+    <Suspense
+      fallback={
+        <MainLayout title="Loading Note...">
+          <Flex justify="center" align="center" h="100%">
+            <Spinner />
+          </Flex>
+        </MainLayout>
+      }
+    >
+      <MainLayout title="Edit Note" headerActions={<DeleteNoteAction noteId={id} />}>
         <NoteEditWidget key={id} noteId={id} />
       </MainLayout>
     </Suspense>

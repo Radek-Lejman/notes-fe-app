@@ -1,8 +1,8 @@
-import { Input } from "@chakra-ui/react";
-import { useNoteSearchContext } from "./NoteSearchContext";
-import type { NoteSearchInputProps } from "../model/types";
+import { Input } from '@chakra-ui/react';
+import { useNoteSearchContext } from './NoteSearchContext';
+import type { NoteSearchInputProps } from '../model/types';
 
-export function NoteSearchInput({ placeholder = "Search notes..." }: NoteSearchInputProps) {
+export function NoteSearchInput({ placeholder = 'Search notes...' }: NoteSearchInputProps) {
   const { query, setQuery } = useNoteSearchContext();
   return (
     <Input

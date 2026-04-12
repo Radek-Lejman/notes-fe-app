@@ -5,6 +5,7 @@ import reactRefresh from 'eslint-plugin-react-refresh'
 import tseslint from 'typescript-eslint'
 import pluginQuery from '@tanstack/eslint-plugin-query'
 import featureSliced from '@conarti/eslint-plugin-feature-sliced'
+import prettierConfig from 'eslint-config-prettier'
 
 export default tseslint.config(
   { ignores: ['dist'] },
@@ -13,6 +14,8 @@ export default tseslint.config(
       js.configs.recommended,
       ...tseslint.configs.recommendedTypeChecked,
       ...pluginQuery.configs['flat/recommended'],
+      // Must be last — disables ESLint rules that would conflict with Prettier formatting
+      prettierConfig,
     ],
     files: ['**/*.{ts,tsx}'],
     languageOptions: {

@@ -1,7 +1,7 @@
-import { RichEditorRoot } from "./RichEditorRoot";
-import { RichEditorContent } from "./RichEditorContent";
-import { RichEditorTitle } from "./RichEditorTitle";
-import { RichEditorBubbleMenu } from "./RichEditorBubbleMenu";
+import { RichEditorRoot } from './RichEditorRoot';
+import { RichEditorContent } from './RichEditorContent';
+import { RichEditorTitle } from './RichEditorTitle';
+import { RichEditorBubbleMenu } from './RichEditorBubbleMenu';
 
 export const RichEditor = {
   Root: RichEditorRoot,
@@ -10,4 +10,4 @@ export const RichEditor = {
   BubbleMenu: RichEditorBubbleMenu,
 };
 
-export { useRichEditorContext } from "./RichEditorContext";
+export { useRichEditorContext } from './RichEditorContext';

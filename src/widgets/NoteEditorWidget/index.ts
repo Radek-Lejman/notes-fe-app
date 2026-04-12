@@ -1,2 +1,2 @@
-export { NoteCreateWidget } from "./ui/NoteCreateWidget";
-export { NoteEditWidget } from "./ui/NoteEditWidget";
+export { NoteCreateWidget } from './ui/NoteCreateWidget';
+export { NoteEditWidget } from './ui/NoteEditWidget';

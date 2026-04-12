@@ -1,5 +1,5 @@
 export type SidePanelState =
-  | { status: 'loading'; message: string, navItems: NavItem[]  }         
+  | { status: 'loading'; message: string; navItems: NavItem[] }
   | { status: 'success'; message: string; navItems: NavItem[] };
 
 export type NavItem = {
@@ -9,8 +9,6 @@ export type NavItem = {
   id: string;
 };
 
-
 export interface SidePanelWidgetNavItemsProps {
   items: NavItem[];
 }
-

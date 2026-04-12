@@ -10,7 +10,7 @@ declare module '@tiptap/core' {
   interface Commands<ReturnType> {
     pageReference: {
       insertPageReference: (options: { noteId: string; title: string }) => ReturnType;
-    }
+    };
   }
 }
 
@@ -48,12 +48,14 @@ export const PageReferenceNode = Node.create<PageReferenceOptions>({
 
   addCommands() {
     return {
-      insertPageReference: (options) => ({ commands }) => {
-        return commands.insertContent({
-          type: this.name,
-          attrs: options,
-        });
-      },
+      insertPageReference:
+        (options) =>
+        ({ commands }) => {
+          return commands.insertContent({
+            type: this.name,
+            attrs: options,
+          });
+        },
     };
   },
 });

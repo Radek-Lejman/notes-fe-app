@@ -1,6 +1,6 @@
-import type { JSX } from "react";
-import { Navigate } from "react-router-dom";
-import { useSession } from "@entities/session";
+import type { JSX } from 'react';
+import { Navigate } from 'react-router-dom';
+import { useSession } from '@entities/session';
 
 export const RequireAuth = ({ children }: { children: JSX.Element }) => {
   const { data: user, isLoading } = useSession();

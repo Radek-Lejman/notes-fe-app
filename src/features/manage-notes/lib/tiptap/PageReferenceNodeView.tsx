@@ -12,7 +12,7 @@ export const PageReferenceNodeView = (props: NodeViewProps) => {
   const options = props.extension.options as PageReferenceExtensionOptions;
 
   const handleClick = () => {
-    if (options.onPageNavigateRequest && typeof noteId === "string") {
+    if (options.onPageNavigateRequest && typeof noteId === 'string') {
       options.onPageNavigateRequest(noteId);
     }
   };
@@ -29,11 +29,11 @@ export const PageReferenceNodeView = (props: NodeViewProps) => {
         bg="gray.50"
         justifyContent="flex-start"
         width="fit-content"
-        _hover={{ bg: "gray.100", cursor: "pointer" }}
+        _hover={{ bg: 'gray.100', cursor: 'pointer' }}
         contentEditable={false} // Bardzo ważne dla Tiptap węzłów!
       >
         <Icon as={FiFileText} mr={2} />
-        {typeof title === "string" ? title : "Untitled Page"}
+        {typeof title === 'string' ? title : 'Untitled Page'}
       </Button>
     </NodeViewWrapper>
   );

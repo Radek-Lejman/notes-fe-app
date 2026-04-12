@@ -1,8 +1,8 @@
-import { Alert } from "@chakra-ui/react";
-import type { ReactNode } from "react";
+import { Alert } from '@chakra-ui/react';
+import type { ReactNode } from 'react';
 
 interface AppAlertProps {
-  status: "info" | "error" | "success" | "warning";
+  status: 'info' | 'error' | 'success' | 'warning';
   children: ReactNode;
   title?: string;
 }

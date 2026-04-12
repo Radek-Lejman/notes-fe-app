@@ -1,11 +1,12 @@
-import { Box, VStack, Text, Flex } from "@chakra-ui/react";
-import { useNoteSearchContext } from "./NoteSearchContext";
-import { LoadingSpinner } from "@shared/ui/Spinner/Spinner";
-import { ErrorMessage } from "@shared/ui/ErrorMessage/ErrorMessage";
-import { useNavigate } from "react-router-dom";
+import { Box, VStack, Text, Flex } from '@chakra-ui/react';
+import { useNoteSearchContext } from './NoteSearchContext';
+import { LoadingSpinner } from '@shared/ui/Spinner/Spinner';
+import { ErrorMessage } from '@shared/ui/ErrorMessage/ErrorMessage';
+import { useNavigate } from 'react-router-dom';
 
 export function NoteSearchResults() {
-  const { results, isLoading, isError, error, debouncedQuery, onItemSelect } = useNoteSearchContext();
+  const { results, isLoading, isError, error, debouncedQuery, onItemSelect } =
+    useNoteSearchContext();
   const navigate = useNavigate();
 
   const handleNoteClick = (noteId: string) => {
@@ -19,15 +20,17 @@ export function NoteSearchResults() {
     return (
       <Flex justify="center" align="center" py={4}>
         <LoadingSpinner />
-        <Text ml={3} color="gray.500">Searching...</Text>
+        <Text ml={3} color="gray.500">
+          Searching...
+        </Text>
       </Flex>
     );
   }
 
   if (isError) {
     return (
-      <ErrorMessage 
-        message={`An error occurred during search: ${error instanceof Error ? error.message : "Unknown error"}`} 
+      <ErrorMessage
+        message={`An error occurred during search: ${error instanceof Error ? error.message : 'Unknown error'}`}
       />
     );
   }
@@ -37,12 +40,14 @@ export function NoteSearchResults() {
   }
 
   if (results.length === 0) {
-    return null; 
+    return null;
   }
 
   return (
     <VStack align="stretch" gap={3} w="full">
-      <Text fontSize="sm" color="gray.500">Found: {results.length}</Text>
+      <Text fontSize="sm" color="gray.500">
+        Found: {results.length}
+      </Text>
       {results.map((note) => (
         <Box
           key={note.id}
@@ -50,11 +55,11 @@ export function NoteSearchResults() {
           borderColor="gray.200"
           p={3}
           borderRadius="md"
-          _hover={{ bg: "gray.50", cursor: "pointer", borderColor: "blue.300" }}
+          _hover={{ bg: 'gray.50', cursor: 'pointer', borderColor: 'blue.300' }}
           transition="all 0.2s"
           onClick={() => handleNoteClick(note.id)}
         >
-          <Text fontWeight="bold">{note.title || "(no title)"}</Text>
+          <Text fontWeight="bold">{note.title || '(no title)'}</Text>
           {/* {note.content ? (
             <Text fontSize="sm" color="gray.600" lineClamp={3} mt={1}>
               {note.content}

@@ -1,15 +1,11 @@
-import { normalizeError } from "../../../lib/error";
-import type {
-  AxiosInstance,
-  InternalAxiosRequestConfig,
-  AxiosError,
-} from "axios";
+import { normalizeError } from '../../../lib/error';
+import type { AxiosInstance, InternalAxiosRequestConfig, AxiosError } from 'axios';
 
 type GetTokenFn = () => Promise<{ csrfToken: string }>;
 
 export const setupCsrfInterceptor = (
   client: AxiosInstance,
-  options: { getCsrfToken: GetTokenFn }
+  options: { getCsrfToken: GetTokenFn },
 ) => {
   let csrfToken: string | null = null;
 
@@ -18,10 +14,7 @@ export const setupCsrfInterceptor = (
       const method = config.method?.toUpperCase();
 
       const requiresCsrf =
-        method === "POST" ||
-        method === "PUT" ||
-        method === "PATCH" ||
-        method === "DELETE";
+        method === 'POST' || method === 'PUT' || method === 'PATCH' || method === 'DELETE';
 
       if (!requiresCsrf) return config;
 
@@ -30,10 +23,10 @@ export const setupCsrfInterceptor = (
         csrfToken = newToken;
       }
 
-      config.headers["X-CSRF-Token"] = csrfToken!;
+      config.headers['X-CSRF-Token'] = csrfToken!;
       return config;
     },
-    (error: unknown) => Promise.reject(normalizeError(error))
+    (error: unknown) => Promise.reject(normalizeError(error)),
   );
 
   client.interceptors.response.use(
@@ -42,12 +35,12 @@ export const setupCsrfInterceptor = (
       if (error.response?.status === 403) {
         const { csrfToken: newToken } = await options.getCsrfToken();
         csrfToken = newToken;
-        
-        error.config!.headers["X-CSRF-Token"] = csrfToken!;
+
+        error.config!.headers['X-CSRF-Token'] = csrfToken!;
         return client.request(error.config!);
       }
 
       return Promise.reject(error);
-    }
+    },
   );
 };

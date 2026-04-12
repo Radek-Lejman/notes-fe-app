@@ -1,28 +1,32 @@
-import { useState } from "react";
-import { PageReferenceNode } from "../../lib/tiptap/PageReferenceNode";
-import type { CustomSlashMenuItem } from "@shared/ui/RichEditor/types";
-import type { NestedNotePluginProps } from "../types";
+import { useState } from 'react';
+import { PageReferenceNode } from '../../lib/tiptap/PageReferenceNode';
+import type { CustomSlashMenuItem } from '@shared/ui/RichEditor/types';
+import type { NestedNotePluginProps } from '../types';
 
-export const useNestedNotePlugin = ({ 
+export const useNestedNotePlugin = ({
   onNestedNoteNavigateRequest,
-  isNestedNoteCreationEnabled = true
+  isNestedNoteCreationEnabled = true,
 }: NestedNotePluginProps = {}) => {
   const [isOpen, setIsOpen] = useState(false);
 
-  const extensions = [PageReferenceNode.configure({ onPageNavigateRequest: onNestedNoteNavigateRequest })];
-  
-  const slashMenuItems: CustomSlashMenuItem[] = isNestedNoteCreationEnabled ? [
-    {
-      label: "Sub-note",
-      value: "nested_note",
-      action: () => setIsOpen(true),
-    }
-  ] : [];
+  const extensions = [
+    PageReferenceNode.configure({ onPageNavigateRequest: onNestedNoteNavigateRequest }),
+  ];
 
-  return { 
-    extensions, 
-    slashMenuItems, 
+  const slashMenuItems: CustomSlashMenuItem[] = isNestedNoteCreationEnabled
+    ? [
+        {
+          label: 'Sub-note',
+          value: 'nested_note',
+          action: () => setIsOpen(true),
+        },
+      ]
+    : [];
+
+  return {
+    extensions,
+    slashMenuItems,
     isOverlayOpen: isOpen,
-    closeOverlay: () => setIsOpen(false)
+    closeOverlay: () => setIsOpen(false),
   };
 };

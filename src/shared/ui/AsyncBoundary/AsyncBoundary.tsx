@@ -8,14 +8,15 @@ export interface AsyncBoundaryProps {
   onReset?: () => void;
 }
 
-export const AsyncBoundary = ({ children, pendingFallback, rejectedFallback, onReset }: AsyncBoundaryProps) => {
- return (
-    <ErrorBoundary
-      onReset={onReset}
-      fallbackRender={rejectedFallback}
-      >
-        <Suspense fallback={pendingFallback}>
-          {children}
-        </Suspense>
+export const AsyncBoundary = ({
+  children,
+  pendingFallback,
+  rejectedFallback,
+  onReset,
+}: AsyncBoundaryProps) => {
+  return (
+    <ErrorBoundary onReset={onReset} fallbackRender={rejectedFallback}>
+      <Suspense fallback={pendingFallback}>{children}</Suspense>
     </ErrorBoundary>
- );}
+  );
+};

@@ -1,5 +1,5 @@
-import { IconButton } from "@chakra-ui/react";
-import { FiTrash } from "react-icons/fi";
+import { IconButton } from '@chakra-ui/react';
+import { FiTrash } from 'react-icons/fi';
 
 interface DeleteNoteActionProps {
   noteId: string;

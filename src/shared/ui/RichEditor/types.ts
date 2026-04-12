@@ -1,5 +1,5 @@
-import { type Editor, type Extensions, type JSONContent } from "@tiptap/react";
-import type React from "react";
+import { type Editor, type Extensions, type JSONContent } from '@tiptap/react';
+import type React from 'react';
 
 export interface RichEditorContextValue {
   editor: Editor | null;

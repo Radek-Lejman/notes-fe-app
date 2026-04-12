@@ -1,4 +1,4 @@
-import type { AuthCredentials } from "../../model/types";
+import type { AuthCredentials } from '../../model/types';
 
 export interface LoginFormProps {
   onSubmit: (credentials: AuthCredentials) => void;

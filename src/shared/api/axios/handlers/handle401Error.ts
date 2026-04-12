@@ -1,5 +1,5 @@
-import type { AuthHandlerContext } from "./types";
-import { normalizeError } from "../../../lib/error";
+import type { AuthHandlerContext } from './types';
+import { normalizeError } from '../../../lib/error';
 
 export const handle401Error = async (context: AuthHandlerContext): Promise<unknown> => {
   const { client, originalRequest, apiError, options, refreshManager } = context;
@@ -8,7 +8,7 @@ export const handle401Error = async (context: AuthHandlerContext): Promise<unkno
     return Promise.reject(apiError);
   }
 
-  if (originalRequest.url?.includes("/auth/refresh")) {
+  if (originalRequest.url?.includes('/auth/refresh')) {
     options.onUnauthorized?.();
     return Promise.reject(apiError);
   }
@@ -32,10 +32,8 @@ export const handle401Error = async (context: AuthHandlerContext): Promise<unkno
     }
   } catch (refreshError) {
     const processedError =
-      refreshError instanceof Error
-        ? refreshError
-        : new Error(String(refreshError));
-    
+      refreshError instanceof Error ? refreshError : new Error(String(refreshError));
+
     refreshManager.process(processedError);
     options.onUnauthorized?.();
     return Promise.reject(apiError);

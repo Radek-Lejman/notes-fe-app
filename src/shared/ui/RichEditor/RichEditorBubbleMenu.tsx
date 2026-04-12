@@ -1,13 +1,8 @@
-import { BubbleMenu } from "@tiptap/react/menus";
-import { IconButton, Group } from "@chakra-ui/react";
-import {
-  MdFormatBold,
-  MdFormatItalic,
-  MdStrikethroughS,
-  MdCode,
-} from "react-icons/md";
-import styles from "./RichEditor.module.css";
-import { useRichEditorContext } from ".";
+import { BubbleMenu } from '@tiptap/react/menus';
+import { IconButton, Group } from '@chakra-ui/react';
+import { MdFormatBold, MdFormatItalic, MdStrikethroughS, MdCode } from 'react-icons/md';
+import styles from './RichEditor.module.css';
+import { useRichEditorContext } from '.';
 
 export const RichEditorBubbleMenu = () => {
   const { editor } = useRichEditorContext();
@@ -15,10 +10,10 @@ export const RichEditorBubbleMenu = () => {
   if (!editor) return null;
 
   const handleIconVariant = (style: string) => {
-    return editor.isActive(style) ? "solid" : "outline";
+    return editor.isActive(style) ? 'solid' : 'outline';
   };
   const handleIconColor = (style: string) => {
-    return editor.isActive(style) ? "brand" : "gray";
+    return editor.isActive(style) ? 'brand' : 'gray';
   };
 
   return (
@@ -27,8 +22,8 @@ export const RichEditorBubbleMenu = () => {
         <IconButton
           aria-label="Bold"
           size="sm"
-          variant={handleIconVariant("bold")}
-          colorScheme={handleIconColor("bold")}
+          variant={handleIconVariant('bold')}
+          colorScheme={handleIconColor('bold')}
           onClick={() => editor.chain().focus().toggleBold().run()}
         >
           <MdFormatBold />
@@ -36,8 +31,8 @@ export const RichEditorBubbleMenu = () => {
         <IconButton
           aria-label="Italic"
           size="sm"
-          variant={handleIconVariant("italic")}
-          colorScheme={handleIconColor("italic")}
+          variant={handleIconVariant('italic')}
+          colorScheme={handleIconColor('italic')}
           onClick={() => editor.chain().focus().toggleItalic().run()}
         >
           <MdFormatItalic />
@@ -45,8 +40,8 @@ export const RichEditorBubbleMenu = () => {
         <IconButton
           aria-label="Strikethrough"
           size="sm"
-          variant={handleIconVariant("strike")}
-          colorScheme={handleIconColor("strike")}
+          variant={handleIconVariant('strike')}
+          colorScheme={handleIconColor('strike')}
           onClick={() => editor.chain().focus().toggleStrike().run()}
         >
           <MdStrikethroughS />
@@ -54,8 +49,8 @@ export const RichEditorBubbleMenu = () => {
         <IconButton
           aria-label="Code"
           size="sm"
-          variant={handleIconVariant("code")}
-          colorScheme={handleIconColor("code")}
+          variant={handleIconVariant('code')}
+          colorScheme={handleIconColor('code')}
           onClick={() => editor.chain().focus().toggleCode().run()}
         >
           <MdCode />

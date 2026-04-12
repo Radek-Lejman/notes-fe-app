@@ -1,73 +1,73 @@
-import { type Editor } from "@tiptap/core";
+import { type Editor } from '@tiptap/core';
 
 export const handleEditorAction = (editor: Editor, editorType: string | undefined) => {
   if (!editorType) return;
-  
+
   switch (editorType) {
-    case "bold":
+    case 'bold':
       editor.chain().focus().toggleBold().run();
       break;
-    case "italic":
+    case 'italic':
       editor.chain().focus().toggleItalic().run();
       break;
-    case "strike":
+    case 'strike':
       editor.chain().focus().toggleStrike().run();
       break;
-    case "code":
+    case 'code':
       editor.chain().focus().toggleCode().run();
       break;
-    case "clearMarks":
+    case 'clearMarks':
       editor.chain().focus().unsetAllMarks().run();
       break;
-    case "clearNodes":
+    case 'clearNodes':
       editor.chain().focus().clearNodes().run();
       break;
-    case "paragraph":
+    case 'paragraph':
       editor.chain().focus().setParagraph().run();
       break;
-    case "h1":
+    case 'h1':
       editor.chain().focus().toggleHeading({ level: 1 }).run();
       break;
-    case "h2":
+    case 'h2':
       editor.chain().focus().toggleHeading({ level: 2 }).run();
       break;
-    case "h3":
+    case 'h3':
       editor.chain().focus().toggleHeading({ level: 3 }).run();
       break;
-    case "h4":
+    case 'h4':
       editor.chain().focus().toggleHeading({ level: 4 }).run();
       break;
-    case "h5":
+    case 'h5':
       editor.chain().focus().toggleHeading({ level: 5 }).run();
       break;
-    case "h6":
+    case 'h6':
       editor.chain().focus().toggleHeading({ level: 6 }).run();
       break;
-    case "bulletList":
+    case 'bulletList':
       editor.chain().focus().toggleBulletList().run();
       break;
-    case "orderedList":
+    case 'orderedList':
       editor.chain().focus().toggleOrderedList().run();
       break;
-    case "codeBlock":
+    case 'codeBlock':
       editor.chain().focus().toggleCodeBlock().run();
       break;
-    case "blockquote":
+    case 'blockquote':
       editor.chain().focus().toggleBlockquote().run();
       break;
-    case "horizontalRule":
+    case 'horizontalRule':
       editor.chain().focus().setHorizontalRule().run();
       break;
-    case "hardBreak":
+    case 'hardBreak':
       editor.chain().focus().setHardBreak().run();
       break;
-    case "undo":
+    case 'undo':
       editor.chain().focus().undo().run();
       break;
-    case "redo":
+    case 'redo':
       editor.chain().focus().redo().run();
       break;
     default:
-      throw new Error("Unknown editor type: " + editorType);
+      throw new Error('Unknown editor type: ' + editorType);
   }
 };

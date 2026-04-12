@@ -1,5 +1,5 @@
-import { Stack, Box, Heading, Text } from "@chakra-ui/react";
-import { FiEdit3 } from "react-icons/fi";
+import { Stack, Box, Heading, Text } from '@chakra-ui/react';
+import { FiEdit3 } from 'react-icons/fi';
 
 interface AuthBrandingProps {
   title: string;
@@ -16,7 +16,7 @@ export const AuthBranding = ({ title, description }: AuthBrandingProps) => {
         {title}
       </Heading>
       {description && (
-        <Text fontSize="lg" color="gray.600" _dark={{ color: "gray.400" }}>
+        <Text fontSize="lg" color="gray.600" _dark={{ color: 'gray.400' }}>
           {description}
         </Text>
       )}

@@ -1,31 +1,29 @@
-import { ReactRenderer } from "@tiptap/react";
-import tippy, { type Instance as TippyInstance } from "tippy.js";
-import { CommandSuggestionList } from "../../../ui/RichEditor/SlashCommand/CommandSuggestionList";
-import { type CommandItem, type CommandSuggestionListRef } from "../../../ui/RichEditor/SlashCommand/types";
-import { handleEditorAction } from "../../editorActions";
-import { richEditorMenu } from "../../../config/editor/menu.config";
-import type { Editor} from "@tiptap/core";
-import { type Range } from "@tiptap/core";
-import { type SuggestionProps, type SuggestionKeyDownProps } from "@tiptap/suggestion";
-import type { CustomSlashMenuItem } from "../../../ui/RichEditor/types";
+import { ReactRenderer } from '@tiptap/react';
+import tippy, { type Instance as TippyInstance } from 'tippy.js';
+import { CommandSuggestionList } from '../../../ui/RichEditor/SlashCommand/CommandSuggestionList';
+import {
+  type CommandItem,
+  type CommandSuggestionListRef,
+} from '../../../ui/RichEditor/SlashCommand/types';
+import { handleEditorAction } from '../../editorActions';
+import { richEditorMenu } from '../../../config/editor/menu.config';
+import type { Editor } from '@tiptap/core';
+import { type Range } from '@tiptap/core';
+import { type SuggestionProps, type SuggestionKeyDownProps } from '@tiptap/suggestion';
+import type { CustomSlashMenuItem } from '../../../ui/RichEditor/types';
 
 export const createSuggestionOptions = (customItems: CustomSlashMenuItem[] = []) => ({
   items: ({ query }: { query: string }) => {
-    const allItems: CustomSlashMenuItem[] = [
-      ...customItems,
-      ...richEditorMenu.menu,
-    ];
+    const allItems: CustomSlashMenuItem[] = [...customItems, ...richEditorMenu.menu];
 
     return allItems
-      .filter((item) =>
-        item.label.toLowerCase().includes(query.toLowerCase())
-      )
+      .filter((item) => item.label.toLowerCase().includes(query.toLowerCase()))
       .slice(0, 10)
       .map((item) => ({
         ...item,
         command: ({ editor, range }: { editor: Editor; range: Range }) => {
           editor.chain().focus().deleteRange(range).run();
-          
+
           if (item.action) {
             item.action(editor);
           } else {
@@ -49,14 +47,14 @@ export const createSuggestionOptions = (customItems: CustomSlashMenuItem[] = [])
           return;
         }
 
-        popup = tippy("body", {
+        popup = tippy('body', {
           getReferenceClientRect: () => props.clientRect?.() as DOMRect,
           appendTo: () => document.body,
           content: component.element,
           showOnCreate: true,
           interactive: true,
-          trigger: "manual",
-          placement: "bottom-start",
+          trigger: 'manual',
+          placement: 'bottom-start',
         });
       },
 
@@ -73,7 +71,7 @@ export const createSuggestionOptions = (customItems: CustomSlashMenuItem[] = [])
       },
 
       onKeyDown(props: SuggestionKeyDownProps) {
-        if (props.event.key === "Escape") {
+        if (props.event.key === 'Escape') {
           popup[0].hide();
           return true;
         }

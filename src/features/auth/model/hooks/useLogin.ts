@@ -1,7 +1,7 @@
-import { useMutation } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
-import { AuthApi } from "@entities/session";
-import type { LoginCredentials } from "../types";
+import { useMutation } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
+import { AuthApi } from '@entities/session';
+import type { LoginCredentials } from '../types';
 
 export const useLogin = () => {
   const navigate = useNavigate();
@@ -11,10 +11,10 @@ export const useLogin = () => {
       return AuthApi.login(credentials);
     },
     onSuccess: () => {
-      void navigate("/");
+      void navigate('/');
     },
     onError: (err) => {
-      console.error("Failed to login:", err);
+      console.error('Failed to login:', err);
     },
   });
 

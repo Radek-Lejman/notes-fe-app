@@ -1,18 +1,23 @@
-import { Textarea } from "@chakra-ui/react";
-import styles from "./RichEditor.module.css";
-import React from "react";
-import { type RichEditorTitleProps } from "./types";
+import { Textarea } from '@chakra-ui/react';
+import styles from './RichEditor.module.css';
+import React from 'react';
+import { type RichEditorTitleProps } from './types';
 
-export const RichEditorTitle = ({ value, onChange, onEnter, placeholder = "Title" }: RichEditorTitleProps) => {
+export const RichEditorTitle = ({
+  value,
+  onChange,
+  onEnter,
+  placeholder = 'Title',
+}: RichEditorTitleProps) => {
   const handleInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     onChange(e.target.value);
-    
+
     e.target.style.height = 'auto';
     e.target.style.height = `${e.target.scrollHeight}px`;
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === "Enter") {
+    if (e.key === 'Enter') {
       e.preventDefault();
       if (onEnter) onEnter();
     }
@@ -27,7 +32,7 @@ export const RichEditorTitle = ({ value, onChange, onEnter, placeholder = "Title
       className={styles.title}
       variant="flushed"
       border="none"
-      _focus={{ border: "none", boxShadow: "none" }}
+      _focus={{ border: 'none', boxShadow: 'none' }}
       px={2}
       py={2}
       minH="unset"
@@ -38,7 +43,7 @@ export const RichEditorTitle = ({ value, onChange, onEnter, placeholder = "Title
       fontWeight="bold"
       lineHeight="1.2"
       color="gray.800"
-      _placeholder={{ color: "gray.400" }}
+      _placeholder={{ color: 'gray.400' }}
     />
   );
 };

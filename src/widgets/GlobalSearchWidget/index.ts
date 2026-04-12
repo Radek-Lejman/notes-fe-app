@@ -1,1 +1,1 @@
-export { GlobalSearchWidget } from "./ui/GlobalSearchWidget";
+export { GlobalSearchWidget } from './ui/GlobalSearchWidget';

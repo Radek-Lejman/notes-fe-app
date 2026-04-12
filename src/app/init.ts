@@ -1,6 +1,6 @@
-import { apiClient } from "@shared/api/axios/client";
-import { setupCsrfInterceptor } from "@shared/api/axios/interceptors/csrf.interceptor";
-import { AuthApi } from "@entities/session";
+import { apiClient } from '@shared/api/axios/client';
+import { setupCsrfInterceptor } from '@shared/api/axios/interceptors/csrf.interceptor';
+import { AuthApi } from '@entities/session';
 
 /**
  * Initializes the API client with specific feature dependencies.
@@ -8,6 +8,6 @@ import { AuthApi } from "@entities/session";
  */
 export const initApiConfig = () => {
   setupCsrfInterceptor(apiClient, {
-    getCsrfToken: AuthApi.getCsrfToken
+    getCsrfToken: AuthApi.getCsrfToken,
   });
 };

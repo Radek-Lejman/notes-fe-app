@@ -1,5 +1,5 @@
-import { createContext, useContext } from "react";
-import type { RichEditorContextValue } from "./types";
+import { createContext, useContext } from 'react';
+import type { RichEditorContextValue } from './types';
 
 export const RichEditorContext = createContext<RichEditorContextValue>({
   editor: null,

@@ -1,4 +1,4 @@
-import type { JSONContent } from "@tiptap/core";
+import type { JSONContent } from '@tiptap/core';
 
 export const parseContent = (content: string): JSONContent | null => {
   if (!content) return null;
