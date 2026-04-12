@@ -10,4 +10,4 @@ export const RichEditor = {
   BubbleMenu: RichEditorBubbleMenu,
 };
 
-export { useRichEditorContext } from "./RichEditorRoot";
+export { useRichEditorContext } from "./RichEditorContext";

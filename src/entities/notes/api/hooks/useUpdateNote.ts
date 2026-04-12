@@ -1,5 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { NotesApi, noteKeys, type Notes } from "@entities/notes";
+import { NotesApi } from "../notesApi";
+import { noteKeys } from "../notesKeys";
+import type { Notes } from "../../model/types";
 
 export const useUpdateNote = () => {
   const client = useQueryClient();

@@ -1,4 +1,5 @@
 import type { AuthHandlerContext } from "./types";
+import { normalizeError } from "../../../lib/error";
 
 export const handle401Error = async (context: AuthHandlerContext): Promise<unknown> => {
   const { client, originalRequest, apiError, options, refreshManager } = context;
@@ -17,7 +18,7 @@ export const handle401Error = async (context: AuthHandlerContext): Promise<unkno
       refreshManager.add(resolve, reject);
     })
       .then(() => client(originalRequest))
-      .catch((err: unknown) => Promise.reject(err));
+      .catch((err: unknown) => Promise.reject(normalizeError(err)));
   }
 
   originalRequest._retry = true;

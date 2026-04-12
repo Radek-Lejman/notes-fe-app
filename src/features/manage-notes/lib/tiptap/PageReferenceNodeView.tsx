@@ -2,13 +2,18 @@ import { NodeViewWrapper, type NodeViewProps } from '@tiptap/react';
 import { Button, Icon } from '@chakra-ui/react';
 import { FiFileText } from 'react-icons/fi';
 
+interface PageReferenceExtensionOptions {
+  onPageNavigateRequest?: (noteId: string) => void;
+}
+
 export const PageReferenceNodeView = (props: NodeViewProps) => {
-  const { node, extension } = props;
-  const { noteId, title } = node.attrs;
+  const { node } = props;
+  const { noteId, title } = node.attrs as Record<string, unknown>;
+  const options = props.extension.options as PageReferenceExtensionOptions;
 
   const handleClick = () => {
-    if (extension.options.onPageNavigateRequest && noteId) {
-      extension.options.onPageNavigateRequest(noteId);
+    if (options.onPageNavigateRequest && typeof noteId === "string") {
+      options.onPageNavigateRequest(noteId);
     }
   };
 
@@ -28,7 +33,7 @@ export const PageReferenceNodeView = (props: NodeViewProps) => {
         contentEditable={false} // Bardzo ważne dla Tiptap węzłów!
       >
         <Icon as={FiFileText} mr={2} />
-        {title || "Untitled Page"}
+        {typeof title === "string" ? title : "Untitled Page"}
       </Button>
     </NodeViewWrapper>
   );

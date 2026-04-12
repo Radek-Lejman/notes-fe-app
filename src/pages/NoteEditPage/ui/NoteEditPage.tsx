@@ -10,7 +10,7 @@ export const NoteEditPage = () => {
   const navigate = useNavigate();
 
   const handleNoteCreated = (newNoteId: string) => {
-    navigate(`/note/${newNoteId}`, { replace: true });
+    void navigate(`/note/${newNoteId}`, { replace: true });
   };
 
   if (!id) {

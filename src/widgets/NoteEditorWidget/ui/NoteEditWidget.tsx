@@ -4,6 +4,7 @@ import { type JSONContent } from "@tiptap/react";
 import { Text } from "@chakra-ui/react";
 import type { NoteEditWidgetProps } from "../model/types";
 import { useNavigate } from "react-router-dom";
+import { parseContent } from "@shared/lib/editor/parseContent";
 
 export const NoteEditWidget = ({ noteId }: NoteEditWidgetProps) => {
   const { data: note } = useGetNote(noteId);
@@ -25,7 +26,7 @@ export const NoteEditWidget = ({ noteId }: NoteEditWidgetProps) => {
   };
 
   const handlePageNavigateRequest = (id: string) => {
-    navigate(`/note/${id}`);
+    void navigate(`/note/${id}`);
   };
 
   const nestedNotePlugin = useNestedNotePlugin({
@@ -36,14 +37,12 @@ export const NoteEditWidget = ({ noteId }: NoteEditWidgetProps) => {
     return <Text>Note not found</Text>;
   }
 
-  const initialContent = typeof note.content === 'string' 
-    ? JSON.parse(note.content) 
-    : note.content || {};
+  const initialContent = parseContent(note.content);
 
   return (
     <NoteEditorForm
       initialTitle={note.title}
-      initialContent={initialContent as JSONContent}
+      initialContent={initialContent}
       onSave={handleSave}
       isSaving={updateNote.isPending}
       editorExtensions={nestedNotePlugin.extensions}

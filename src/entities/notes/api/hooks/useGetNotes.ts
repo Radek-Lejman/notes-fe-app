@@ -1,5 +1,5 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { noteQueries } from "@entities/notes";
+import { noteQueries } from "../notesQuery";
 
 export const useGetNotes = () =>
   useSuspenseQuery(noteQueries.list());

@@ -9,7 +9,7 @@ export function NoteSearchResults() {
   const navigate = useNavigate();
 
   const handleNoteClick = (noteId: string) => {
-    navigate(`/note/${noteId}`);
+    void navigate(`/note/${noteId}`);
     if (onItemSelect) {
       onItemSelect(noteId);
     }

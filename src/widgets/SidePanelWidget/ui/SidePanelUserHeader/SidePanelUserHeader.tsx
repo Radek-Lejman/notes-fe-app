@@ -21,7 +21,7 @@ export const SidePanelUserHeader = () => {
     }
 
     return (
-        <Text fontSize="md" fontWeight="bold" color="gray.800" _dark={{color: "gray.100"}}>
+        <Text fontSize="md" w="full" textAlign="center" fontWeight="bold" color="gray.800" _dark={{color: "gray.100"}}>
             Notes APP
         </Text>
     );

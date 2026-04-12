@@ -11,7 +11,7 @@ export const useRegister = () => {
       return AuthApi.register(credentials);
     },
     onSuccess: () => {
-      navigate("/");
+      void navigate("/");
     },
     onError: (err) => {
       console.error("Failed to register:", err);

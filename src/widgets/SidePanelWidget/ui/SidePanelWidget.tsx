@@ -9,9 +9,8 @@ import { AsyncBoundary } from "@shared/ui/AsyncBoundary/AsyncBoundary";
 import { SidePanelWidgetNavItems } from "./SidePanelWidgetNavigation/SidePanelWidgetNavigation";
 import { SidePanelUserHeader } from "./SidePanelUserHeader/SidePanelUserHeader";
 import { Box } from "@chakra-ui/react";
-import { GlobalSearchWidget } from "@/widgets/GlobalSearchWidget";
 
-export const SidePanelWidget = () => {
+export const SidePanelWidget = ({ searchSlot }: { searchSlot?: React.ReactNode }) => {
     const { reset } = useQueryErrorResetBoundary();
 
   return (
@@ -22,11 +21,19 @@ export const SidePanelWidget = () => {
 
       <SidePanel.Content>
         <SidePanel.Section>
-          <GlobalSearchWidget />
+            <ShowOnlyUser> 
+              {() => (
+                searchSlot
+              )}
+            </ShowOnlyUser>
         </SidePanel.Section>
 
         <SidePanel.Section>
-          <SidePanelWidgetNavItems items={SIDE_PANEL_NAV_ITEMS} />
+          <ShowOnlyUser> 
+              {() => (
+                <SidePanelWidgetNavItems items={SIDE_PANEL_NAV_ITEMS} />
+              )}
+          </ShowOnlyUser>
         </SidePanel.Section>
 
         <SidePanel.Section flex={1}>

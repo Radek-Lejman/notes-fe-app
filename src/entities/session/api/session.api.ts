@@ -9,34 +9,34 @@ import type {
 
 export const AuthApi = {
   login: async (dto: LoginDto): Promise<MessageResponse> => {
-    const { data } = await apiClient.post("/auth/login", dto);
+    const { data } = await apiClient.post<MessageResponse>("/auth/login", dto);
     return data;
   },
 
   register: async (dto: RegisterDto): Promise<MessageResponse> => {
-    const { data } = await apiClient.post("/auth/register", dto);
+    const { data } = await apiClient.post<MessageResponse>("/auth/register", dto);
     return data;
   },
 
   me: async (): Promise<User> => {
-    const { data } = await apiClient.get("/auth/me", {
+    const { data } = await apiClient.get<User>("/auth/me", {
       _skipAuthRefresh: true,
     });
     return data;
   },
 
   refresh: async (): Promise<MessageResponse> => {
-    const { data } = await apiClient.post("/auth/refresh");
+    const { data } = await apiClient.post<MessageResponse>("/auth/refresh");
     return data;
   },
 
   logout: async (): Promise<MessageResponse> => {
-    const { data } = await apiClient.post("/auth/logout");
+    const { data } = await apiClient.post<MessageResponse>("/auth/logout");
     return data;
   },
 
   getCsrfToken: async (): Promise<CsrfResponse> => {
-    const { data } = await apiClient.get("/csrf-token");
+    const { data } = await apiClient.get<CsrfResponse>("/csrf-token");
     return data;
   },
 };

@@ -1,4 +1,6 @@
-export const richEditorMenu = {
+import type { CustomSlashMenuItem } from "../../ui/RichEditor/types";
+
+export const richEditorMenu: { menu: CustomSlashMenuItem[] } = {
   menu: [
     { value: "bold", label: "Bold" },
     { value: "italic", label: "Italic" },

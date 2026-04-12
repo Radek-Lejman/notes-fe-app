@@ -4,14 +4,14 @@ import { CommandSuggestionList } from "../../../ui/RichEditor/SlashCommand/Comma
 import { type CommandItem, type CommandSuggestionListRef } from "../../../ui/RichEditor/SlashCommand/types";
 import { handleEditorAction } from "../../editorActions";
 import { richEditorMenu } from "../../../config/editor/menu.config";
-import { Editor, type Range } from "@tiptap/core";
+import type { Editor} from "@tiptap/core";
+import { type Range } from "@tiptap/core";
 import { type SuggestionProps, type SuggestionKeyDownProps } from "@tiptap/suggestion";
 import type { CustomSlashMenuItem } from "../../../ui/RichEditor/types";
 
 export const createSuggestionOptions = (customItems: CustomSlashMenuItem[] = []) => ({
   items: ({ query }: { query: string }) => {
-    // Combine default and custom items
-    const allItems = [
+    const allItems: CustomSlashMenuItem[] = [
       ...customItems,
       ...richEditorMenu.menu,
     ];
@@ -26,7 +26,7 @@ export const createSuggestionOptions = (customItems: CustomSlashMenuItem[] = [])
         command: ({ editor, range }: { editor: Editor; range: Range }) => {
           editor.chain().focus().deleteRange(range).run();
           
-          if ('action' in item && typeof item.action === 'function') {
+          if (item.action) {
             item.action(editor);
           } else {
             handleEditorAction(editor, item.value);

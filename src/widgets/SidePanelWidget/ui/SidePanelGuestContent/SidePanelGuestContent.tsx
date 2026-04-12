@@ -1,14 +1,18 @@
-import { Button, Link, VStack, Text } from "@chakra-ui/react";
+import { Button, VStack, Text } from "@chakra-ui/react";
+import type { ButtonProps } from "@chakra-ui/react";
 import { NavLink } from "react-router-dom";
+import type { NavLinkProps } from "react-router-dom";
+
+const NavLinkButton = Button as React.FC<ButtonProps & NavLinkProps>;
 
 export const SidePanelGuestContent = () => (
   <VStack align="start"  mt={4}>
     <Text>Zaloguj się, aby mieć dostęp do swoich notatek.</Text>
-    <Button as={Link} colorScheme="blue" size="sm" width="full">
-      <NavLink to="/login" replace >Zaloguj się</NavLink>
-    </Button>
-    <Button as={Link}  variant="outline" size="sm" width="full">
-      <NavLink to="/register" replace >Załóż konto</NavLink>
-    </Button>
+    <NavLinkButton as={NavLink} to="/login" replace colorScheme="blue" size="sm" width="full">
+      Zaloguj się
+    </NavLinkButton>
+    <NavLinkButton as={NavLink} to="/register" replace variant="outline" size="sm" width="full">
+      Załóż konto
+    </NavLinkButton>
   </VStack>
 );

@@ -1,8 +1,13 @@
 import { BubbleMenu } from "@tiptap/react/menus";
-import { useRichEditorContext } from "./RichEditorRoot";
 import { IconButton, Group } from "@chakra-ui/react";
-import { MdFormatBold, MdFormatItalic, MdStrikethroughS, MdCode } from "react-icons/md";
+import {
+  MdFormatBold,
+  MdFormatItalic,
+  MdStrikethroughS,
+  MdCode,
+} from "react-icons/md";
 import styles from "./RichEditor.module.css";
+import { useRichEditorContext } from ".";
 
 export const RichEditorBubbleMenu = () => {
   const { editor } = useRichEditorContext();
@@ -11,16 +16,13 @@ export const RichEditorBubbleMenu = () => {
 
   const handleIconVariant = (style: string) => {
     return editor.isActive(style) ? "solid" : "outline";
-  }
+  };
   const handleIconColor = (style: string) => {
     return editor.isActive(style) ? "brand" : "gray";
-  }
+  };
 
   return (
-    <BubbleMenu
-      editor={editor}
-      className={styles.bubbleMenu}
-    >
+    <BubbleMenu editor={editor} className={styles.bubbleMenu}>
       <Group attached>
         <IconButton
           aria-label="Bold"

@@ -11,7 +11,7 @@ export const useLogin = () => {
       return AuthApi.login(credentials);
     },
     onSuccess: () => {
-      navigate("/");
+      void navigate("/");
     },
     onError: (err) => {
       console.error("Failed to login:", err);

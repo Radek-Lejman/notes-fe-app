@@ -24,7 +24,7 @@ export const LoginForm = ({
       <Stack gap={5}>
         <Field.Root invalid={!!error} required>
           <Field.Label fontWeight="medium">Email address</Field.Label>
-          <Box position="relative">
+          <Box position="relative" w="full">
             <Box
               position="absolute"
               left={3}
@@ -52,7 +52,7 @@ export const LoginForm = ({
 
         <Field.Root invalid={!!error} required>
           <Field.Label fontWeight="medium">Password</Field.Label>
-          <Box position="relative">
+          <Box position="relative" w="full">
             <Box
               position="absolute"
               left={3}

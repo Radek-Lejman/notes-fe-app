@@ -1,5 +1,5 @@
 import { EditorContent } from "@tiptap/react";
-import { useRichEditorContext } from "./RichEditorRoot";
+import { useRichEditorContext } from ".";
 
 export const RichEditorContent = () => {
   const { editor } = useRichEditorContext();

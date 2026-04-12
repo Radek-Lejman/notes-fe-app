@@ -4,11 +4,12 @@ import { DashboardLayout } from "@shared/ui/layouts/Dashboard/DashboardLayout";
 import { SidePanelWidget } from "@widgets/SidePanelWidget";
 import { WelcomePageContainer } from "@pages/WelcomePage";
 import { NoteEditPage } from "@pages/NoteEditPage";
+import { GlobalSearchWidget } from "@/widgets/GlobalSearchWidget";
 
 export const AppRoutes = () => {
   return (
     <Routes>
-      <Route element={<DashboardLayout  sidebar={<SidePanelWidget />} />}>
+      <Route element={<DashboardLayout  sidebar={<SidePanelWidget searchSlot={<GlobalSearchWidget />} />} />}>
         <Route
           path="/login"
           element={

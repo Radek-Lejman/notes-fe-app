@@ -5,11 +5,14 @@ import { AuthLayout } from "./AuthLayout/AuthLayout";
 import { AuthBranding } from "./AuthBranding/AuthBranding";
 import { LoginForm } from "./LoginForm/LoginForm";
 import { AppAlert } from "@shared/ui/AppAlert";
+import { isAuthNavigationState } from "../lib/guards";
 
 export const LoginPageContainer = () => {
   const { submitLogin, isLoading, error } = useLogin();
   const location = useLocation();
-  const sessionExpired = location.state?.sessionExpired;
+  const sessionExpired = isAuthNavigationState(location.state) 
+    ? location.state.sessionExpired 
+    : false;
 
   return (
     <AuthLayout>

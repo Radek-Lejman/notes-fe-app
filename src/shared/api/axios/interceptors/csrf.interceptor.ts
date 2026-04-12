@@ -1,3 +1,4 @@
+import { normalizeError } from "../../../lib/error";
 import type {
   AxiosInstance,
   InternalAxiosRequestConfig,
@@ -32,7 +33,7 @@ export const setupCsrfInterceptor = (
       config.headers["X-CSRF-Token"] = csrfToken!;
       return config;
     },
-    (error) => Promise.reject(error)
+    (error: unknown) => Promise.reject(normalizeError(error))
   );
 
   client.interceptors.response.use(

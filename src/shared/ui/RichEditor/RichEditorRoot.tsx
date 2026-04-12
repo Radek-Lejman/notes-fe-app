@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect } from "react";
+import { useEffect } from "react";
 import { useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
@@ -6,17 +6,8 @@ import { TextStyleKit } from "@tiptap/extension-text-style";
 import styles from "./RichEditor.module.css";
 import { SlashCommand } from "../../lib/editor/extensions/SlashCommand";
 import { createSuggestionOptions } from "../../lib/editor/extensions/suggestion";
-import { type RichEditorContextValue, type RootProps } from "./types";
-
-const RichEditorContext = createContext<RichEditorContextValue | null>(null);
-
-export const useRichEditorContext = () => {
-  const context = useContext(RichEditorContext);
-  if (!context) {
-    throw new Error("RichEditor components must be used within a <RichEditor.Root>");
-  }
-  return context;
-};
+import { type RootProps } from "./types";
+import { RichEditorContext } from "./RichEditorContext";
 
 export const RichEditorRoot = ({
   value = {},

@@ -3,23 +3,23 @@ import type { Notes, SearchNotesParams, CreateNoteDto, UpdateNoteDto } from "../
 
 export const NotesApi = {
   getNotes: async (): Promise<Notes[]> => {
-    const { data } = await apiClient.get("/notes");
+    const { data } = await apiClient.get<Notes[]>("/notes");
     return data;
   },
 
   getNote: async (id: string): Promise<Notes> => {
-    const { data } = await apiClient.get(`/notes/${id}`);
+    const { data } = await apiClient.get<Notes>(`/notes/${id}`);
     return data;
   },
 
-  createNote: async (payload: CreateNoteDto) => {
-    const { data } = await apiClient.post("/notes", payload);
+  createNote: async (payload: CreateNoteDto): Promise<Notes> => {
+    const { data } = await apiClient.post<Notes>("/notes", payload);
     return data;
   },
 
-  updateNote: async (payload: UpdateNoteDto) => {
+  updateNote: async (payload: UpdateNoteDto): Promise<Notes> => {
     const { id, ...dataPayload } = payload;
-    const { data } = await apiClient.patch(`/notes/${id}`, dataPayload);
+    const { data } = await apiClient.patch<Notes>(`/notes/${id}`, dataPayload);
     return data;
   },
 
