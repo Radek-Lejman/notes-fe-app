@@ -23,6 +23,7 @@ export const NoteCreateWidget = ({ onNoteCreated }: NoteCreateWidgetProps) => {
       initialContent={{} as JSONContent}
       onSave={handleSave}
       isSaving={createNote.isPending}
+      saveError={createNote.error ? createNote.error.message || 'Server connection error' : null}
     />
   );
 };

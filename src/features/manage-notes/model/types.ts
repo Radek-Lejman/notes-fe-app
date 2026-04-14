@@ -12,6 +12,7 @@ export interface NoteEditorFormProps {
   initialContent: JSONContent | null;
   onSave: (data: { title: string; content: JSONContent | null }) => void;
   isSaving: boolean;
+  saveError?: string | null;
   editorExtensions?: Extensions;
   slashMenuItems?: CustomSlashMenuItem[];
   editorOverlays?: React.ReactNode;

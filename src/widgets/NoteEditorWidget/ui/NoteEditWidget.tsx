@@ -45,6 +45,11 @@ export const NoteEditWidget = ({ noteId }: NoteEditWidgetProps) => {
       initialContent={initialContent}
       onSave={handleSave}
       isSaving={updateNote.isPending}
+      saveError={
+        updateNote.error
+          ? updateNote.error.message || 'An error occurred while saving the note'
+          : null
+      }
       editorExtensions={nestedNotePlugin.extensions}
       slashMenuItems={nestedNotePlugin.slashMenuItems}
       editorOverlays={
