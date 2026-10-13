@@ -118,7 +118,7 @@ Nie były naprawiane, bo zakres zadania obejmował testy. Każdy z D1–D4, D6 i
 | **D5** | średnia | `DeleteNoteAction` | Przycisk „Delete note” jest widoczny na stronie notatki, ale tylko loguje do konsoli. Użytkownik może sądzić, że usunął notatkę. | brak (`manageNotesUi.test.tsx` sprawdza tylko render) |
 | **D6** | niska | `widgets/SidePanelWidget/config/navigaton.ts` | Link „Settings” prowadzi do `/settings`, a takiej trasy nie ma (pusta strona). | `AppRoutes.test.tsx` › *every link in the side panel* |
 | **D7** | niska (a11y) | `LoginForm`, `RegisterForm` | Przycisk pokaż/ukryj hasło nie ma `aria-label`, więc czytnik ekranu odczyta pusty przycisk. | `authForms.test.tsx` (helper `passwordToggle`) |
-| **D8** | wysoka (UX) | `NoteEditPage` / `AppRoutes` | Brak error boundary. Błąd ładowania notatki (usunięta notatka → 404, brak sieci) rzucany przez `useSuspenseQuery` odmontowuje **całą aplikację** (biały ekran). | `NoteEditPage.test.tsx` › *instead of a blank page* |
+| ~~**D8**~~ ✅ naprawione 2026-10-12 | wysoka (UX) | `NoteEditPage` / `AppRoutes` | Brak error boundary. Błąd ładowania notatki (usunięta notatka → 404, brak sieci) rzucany przez `useSuspenseQuery` odmontowuje **całą aplikację** (biały ekran). | `NoteEditPage.test.tsx` › *instead of a blank page*, *Try again* (zwykłe `it`) |
 | D9 | info | różne | Martwy kod: `SidePanelError` nieużywany. `AuthApi.logout` nie jest nigdzie wywoływane, więc w UI nie ma wylogowania. | — |
 
 ## 7. Co zostaje poza testami jednostkowymi

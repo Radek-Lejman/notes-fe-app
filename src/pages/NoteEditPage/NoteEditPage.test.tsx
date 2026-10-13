@@ -128,15 +128,25 @@ describe('NoteEditPage — editing', () => {
     expect(await screen.findByText('Note not found')).toBeInTheDocument();
   });
 
-  // Known defect D8 (docs/testing/unit-test-audit.md): a failed load (404 for a deleted note,
-  // network error) is thrown by useSuspenseQuery and no error boundary catches it, so the whole
-  // app unmounts. Remove `.fails` once fixed.
-  it.fails('shows an error instead of a blank page when the note cannot be loaded', async () => {
+  // Regression test for D8 (docs/testing/unit-test-audit.md): a failed load used to unmount the app.
+  it('shows an error instead of a blank page when the note cannot be loaded', async () => {
     vi.spyOn(console, 'error').mockImplementation(() => {});
     vi.spyOn(NotesApi, 'getNote').mockRejectedValue(new ApiError(404, 'Note not found'));
     renderPage('/note/n1');
 
     expect(await screen.findByText(/Note not found/)).toBeInTheDocument();
+  });
+
+  it('loads the note again after "Try again" when the previous load failed', async () => {
+    vi.spyOn(console, 'error').mockImplementation(() => {});
+    vi.spyOn(NotesApi, 'getNote')
+      .mockRejectedValueOnce(new ApiError(503, 'Service unavailable'))
+      .mockResolvedValue(NOTE);
+    renderPage('/note/n1');
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Try again' }));
+
+    expect(await titleInput()).toHaveValue('Docker');
   });
 });
 
