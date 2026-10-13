@@ -1,11 +1,17 @@
 import '@testing-library/jest-dom/vitest';
 import { cleanup } from '@testing-library/react';
-import { afterEach, vi } from 'vitest';
+import { afterAll, afterEach, vi } from 'vitest';
 
 afterEach(() => {
   cleanup();
   sessionStorage.clear();
 });
+
+// Tiptap's BubbleMenuView.destroy() does not clear its 250 ms update debounce timer, so a selection
+// change at the end of the last test in a file fires it after jsdom is torn down
+// ("document is not defined" as an unhandled error, which fails the run). Let it fire first.
+const BUBBLE_MENU_UPDATE_DELAY_MS = 250;
+afterAll(() => new Promise((resolve) => setTimeout(resolve, BUBBLE_MENU_UPDATE_DELAY_MS + 50)));
 
 // jsdom has no layout engine; Chakra (Ark UI / Floating UI) needs these to mount overlays.
 class ResizeObserverStub {
