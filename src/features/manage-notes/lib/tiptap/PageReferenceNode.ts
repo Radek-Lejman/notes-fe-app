@@ -1,5 +1,6 @@
 import { Node, mergeAttributes } from '@tiptap/core';
 import { ReactNodeViewRenderer } from '@tiptap/react';
+import { PAGE_REFERENCE_NODE, pageReferenceMarkdown } from '@shared/lib/editor/markdown';
 import { PageReferenceNodeView } from './PageReferenceNodeView';
 
 export interface PageReferenceOptions {
@@ -15,7 +16,9 @@ declare module '@tiptap/core' {
 }
 
 export const PageReferenceNode = Node.create<PageReferenceOptions>({
-  name: 'pageReference',
+  name: PAGE_REFERENCE_NODE,
+  // Stored as `[Title](/notes/<id>)` on its own line.
+  ...pageReferenceMarkdown,
   group: 'block',
   atom: true, // It's a single block, no text content inside it manageable by editor
 

@@ -1,5 +1,11 @@
 import { apiClient } from '@shared/api/axios/client';
-import type { Notes, SearchNotesParams, CreateNoteDto, UpdateNoteDto } from '../model/types';
+import type {
+  Notes,
+  NoteSearchHit,
+  SearchNotesParams,
+  CreateNoteDto,
+  UpdateNoteDto,
+} from '../model/types';
 
 export const NotesApi = {
   getNotes: async (): Promise<Notes[]> => {
@@ -23,8 +29,8 @@ export const NotesApi = {
     return data;
   },
 
-  searchNote: async (payload: SearchNotesParams): Promise<Notes[]> => {
-    const { data } = await apiClient.get<Notes[]>('/notes/search', {
+  searchNote: async (payload: SearchNotesParams): Promise<NoteSearchHit[]> => {
+    const { data } = await apiClient.get<NoteSearchHit[]>('/notes/search', {
       params: payload,
     });
     return data;

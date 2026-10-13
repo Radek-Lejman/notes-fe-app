@@ -1,11 +1,11 @@
-import { useState, useEffect, useCallback } from 'react';
-import type { JSONContent } from '@tiptap/react';
+import { useState, useCallback } from 'react';
 import { useAutoSave } from './useAutoSave';
 
 export interface UseNoteFormProps {
   initialTitle: string;
-  initialContent: JSONContent | null;
-  onSave: (data: { title: string; content: JSONContent | null }) => void;
+  /** Markdown. */
+  initialContent: string;
+  onSave: (data: { title: string; content: string }) => void;
   debounceMs?: number;
 }
 
@@ -16,23 +16,20 @@ export const useNoteForm = ({
   debounceMs = 1500,
 }: UseNoteFormProps) => {
   const [title, setTitle] = useState(initialTitle);
-  const [content, setContent] = useState<JSONContent | null>(initialContent);
+  const [content, setContent] = useState(initialContent);
 
-  const { syncStatus, markDirty, markClean, forceCommit } = useAutoSave({
+  // Initial values are read once (the widget is keyed by note id). Re-applying them when the
+  // saved note comes back would discard edits typed while the save was in flight.
+  const { syncStatus, markDirty, forceCommit } = useAutoSave({
     onSave,
     debounceMs,
   });
 
-  useEffect(() => {
-    setTitle(initialTitle);
-    setContent(initialContent);
-    markClean();
-  }, [initialTitle, initialContent, markClean]);
-
+  // Empty markdown is a valid note body; only a missing title blocks saving.
   const handleContentChange = useCallback(
-    (newContent: JSONContent) => {
+    (newContent: string) => {
       setContent(newContent);
-      if (!title || !newContent) return;
+      if (!title) return;
       markDirty({ title, content: newContent });
     },
     [title, markDirty],
@@ -41,17 +38,16 @@ export const useNoteForm = ({
   const handleTitleChange = useCallback(
     (newTitle: string) => {
       setTitle(newTitle);
-      if (!newTitle || !content) return;
+      if (!newTitle) return;
       markDirty({ title: newTitle, content });
     },
     [content, markDirty],
   );
 
   const commitEditorState = useCallback(
-    (immediateContent?: JSONContent) => {
-      const finalContent = immediateContent || content;
-      if (!title || !finalContent) return;
-      forceCommit({ title, content: finalContent });
+    (immediateContent?: string) => {
+      if (!title) return;
+      forceCommit({ title, content: immediateContent ?? content });
     },
     [title, content, forceCommit],
   );

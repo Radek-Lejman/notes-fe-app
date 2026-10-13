@@ -1,0 +1,62 @@
+.markdownView :global(.ProseMirror) {
+  outline: none;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+
+.markdownView :global(.ProseMirror > * + *) {
+  margin-top: 0.5em;
+}
+
+.markdownView :global(.ProseMirror h1),
+.markdownView :global(.ProseMirror h2),
+.markdownView :global(.ProseMirror h3) {
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.markdownView :global(.ProseMirror h1) {
+  font-size: 1.2em;
+}
+
+.markdownView :global(.ProseMirror h2) {
+  font-size: 1.1em;
+}
+
+.markdownView :global(.ProseMirror ul) {
+  list-style: disc;
+  padding-left: 1.25em;
+}
+
+.markdownView :global(.ProseMirror ol) {
+  list-style: decimal;
+  padding-left: 1.25em;
+}
+
+.markdownView :global(.ProseMirror code) {
+  font-family: ui-monospace, monospace;
+  font-size: 0.85em;
+  background: rgba(127, 127, 127, 0.15);
+  border-radius: 4px;
+  padding: 0.1em 0.3em;
+}
+
+.markdownView :global(.ProseMirror pre) {
+  background: rgba(127, 127, 127, 0.12);
+  border-radius: 6px;
+  padding: 0.5em 0.75em;
+  overflow-x: auto;
+}
+
+.markdownView :global(.ProseMirror pre code) {
+  background: none;
+  padding: 0;
+}
+
+.markdownView :global(.ProseMirror blockquote) {
+  border-left: 3px solid rgba(127, 127, 127, 0.4);
+  padding-left: 0.75em;
+  color: inherit;
+  opacity: 0.85;
+}

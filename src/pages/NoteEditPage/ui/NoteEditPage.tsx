@@ -4,6 +4,7 @@ import { Flex, Spinner } from '@chakra-ui/react';
 import { Suspense } from 'react';
 import { NoteEditWidget, NoteCreateWidget } from '@widgets/NoteEditorWidget';
 import { DeleteNoteAction } from '@features/manage-notes';
+import { NoteChatWidget } from '@widgets/NoteChatWidget';
 
 export const NoteEditPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -31,7 +32,15 @@ export const NoteEditPage = () => {
         </MainLayout>
       }
     >
-      <MainLayout title="Edit Note" headerActions={<DeleteNoteAction noteId={id} />}>
+      <MainLayout
+        title="Edit Note"
+        headerActions={
+          <>
+            <NoteChatWidget key={id} noteId={id} />
+            <DeleteNoteAction noteId={id} />
+          </>
+        }
+      >
         <NoteEditWidget key={id} noteId={id} />
       </MainLayout>
     </Suspense>

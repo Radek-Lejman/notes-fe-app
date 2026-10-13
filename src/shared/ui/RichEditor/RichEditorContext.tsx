@@ -3,6 +3,8 @@ import type { RichEditorContextValue } from './types';
 
 export const RichEditorContext = createContext<RichEditorContextValue>({
   editor: null,
+  isShortcutsOpen: false,
+  setShortcutsOpen: () => {},
 });
 
 export const useRichEditorContext = (): RichEditorContextValue => {

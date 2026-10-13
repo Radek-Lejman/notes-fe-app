@@ -10,10 +10,10 @@ export const WelcomeHero: FC<WelcomeHeroProps> = ({ username }) => {
   return (
     <Box w="full" h="full" display="flex" alignItems="center" justifyContent="center" p={8}>
       <VStack gap={6} textAlign="center" maxW="lg">
-        <Heading as="h1" size="2xl" color="gray.800">
+        <Heading as="h1" size="2xl" color="gray.800" _dark={{ color: 'gray.100' }}>
           Welcome{username ? `, ${username}` : ''}!
         </Heading>
-        <Text fontSize="lg" color="gray.600">
+        <Text fontSize="lg" color="gray.600" _dark={{ color: 'gray.400' }}>
           Select a note from the side panel to start editing, or create a new one to capture your
           thoughts.
         </Text>

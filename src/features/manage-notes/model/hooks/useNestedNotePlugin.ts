@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { LuFilePlus } from 'react-icons/lu';
 import { PageReferenceNode } from '../../lib/tiptap/PageReferenceNode';
 import type { CustomSlashMenuItem } from '@shared/ui/RichEditor/types';
 import type { NestedNotePluginProps } from '../types';
@@ -18,6 +19,9 @@ export const useNestedNotePlugin = ({
         {
           label: 'Sub-note',
           value: 'nested_note',
+          description: 'Create a nested note',
+          icon: LuFilePlus,
+          keywords: ['page', 'child', 'nested', 'subpage'],
           action: () => setIsOpen(true),
         },
       ]

@@ -17,7 +17,14 @@ const MainLayout = ({ children, className, title, headerActions }: MainLayoutPro
         </Heading>
         <HStack gap={2}>{headerActions}</HStack>
       </Flex>
-      <Box as="main" flex="1" overflow="auto" bg="gray.50" pos="relative">
+      <Box
+        as="main"
+        flex="1"
+        overflow="auto"
+        bg="gray.50"
+        _dark={{ bg: 'gray.950' }}
+        pos="relative"
+      >
         <Box maxW="5xl" mx="auto" w="full" h="full" p="4">
           {children}
         </Box>

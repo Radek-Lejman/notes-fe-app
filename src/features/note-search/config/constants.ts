@@ -3,7 +3,8 @@ import type { SearchFilters } from '../model/types';
 export const DEFAULT_SEARCH_FILTERS: SearchFilters = {
   limit: 20,
   order: 'rank',
-  fields: 'title,content',
+  // Hits come with a snippet; the full markdown is only needed when explicitly requested.
+  fields: 'title',
 };
 
 export const SEARCH_ORDER_OPTIONS: { value: NonNullable<SearchFilters['order']>; label: string }[] =

@@ -43,6 +43,7 @@ export const RichEditorTitle = ({
       fontWeight="bold"
       lineHeight="1.2"
       color="gray.800"
+      _dark={{ color: 'gray.100' }}
       _placeholder={{ color: 'gray.400' }}
     />
   );

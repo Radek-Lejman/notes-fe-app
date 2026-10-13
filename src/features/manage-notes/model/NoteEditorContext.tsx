@@ -1,8 +1,7 @@
 import { createContext, useContext } from 'react';
-import { type JSONContent } from '@tiptap/react';
 
 export interface NoteEditorContextValue {
-  commitEditorState: (immediateContent?: JSONContent) => void;
+  commitEditorState: (immediateContent?: string) => void;
 }
 
 export const NoteEditorContext = createContext<NoteEditorContextValue | null>(null);

@@ -60,13 +60,11 @@ export function NoteSearchResults() {
           onClick={() => handleNoteClick(note.id)}
         >
           <Text fontWeight="bold">{note.title || '(no title)'}</Text>
-          {/* {note.content ? (
-            <Text fontSize="sm" color="gray.600" lineClamp={3} mt={1}>
-              {note.content}
+          {note.snippet && (
+            <Text fontSize="sm" color="gray.600" _dark={{ color: 'gray.400' }} lineClamp={3} mt={1}>
+              {note.snippet}
             </Text>
-          ) : (
-             <Text fontSize="xs" color="gray.400" mt={1}>(no content)</Text>
-          )} */}
+          )}
           {/* {note.createdAt && (
              <Text fontSize="xs" color="gray.400" mt={2}>Date: {new Date(note.createdAt).toLocaleString()}</Text>
           )} */}

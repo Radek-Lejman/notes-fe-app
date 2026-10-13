@@ -1,96 +1,189 @@
+/* Colors come from Chakra semantic tokens, so light and dark mode both work. */
+
 .richEditor {
-  display: flex;
-  align-items: flex-start;
-  justify-content: flex-start;
+  position: relative;
   width: 100%;
-  position: relative; 
-  padding-left: 2rem; 
+  min-height: 2em;
+  /* Room on the left for the block handle (+ and drag grip). */
+  padding-left: 3rem;
+}
+
+/* Touch devices have no hover handle; give the text the room back. */
+@media (hover: none) {
+  .richEditor {
+    padding-left: 0.5rem;
+  }
 }
 
 .richEditor :global(.ProseMirror) {
-  flex-grow: 1;
   outline: none;
   min-width: 0;
-  padding: 4px 8px;
+  padding: 4px 8px 4rem;
+  color: var(--chakra-colors-fg);
+  font-size: 1rem;
+  line-height: 1.65;
+  overflow-wrap: break-word;
 }
 
-.richEditor :global(.ProseMirror p.is-editor-empty:first-child::before) {
-  content: attr(data-placeholder);
-  float: left;
-  color: #adb5bd;
-  pointer-events: none;
-  height: 0;
-}
-
-.richEditor {
-  min-height: 2em; 
+/* Vertical rhythm between blocks. */
+.richEditor :global(.ProseMirror > * + *) {
+  margin-top: 0.75em;
 }
 
 .richEditor :global(.ProseMirror p) {
-  font-size: 1em;
-  line-height: 1.6;
   margin: 0;
-  color: #2d3748;
 }
 
-.openDropdown {
-  opacity: 0;
-  transition: opacity 0.2s ease, background-color 0.2s ease;
-  position: absolute;
-  left: 0; 
-  top: 4px;
-  z-index: 10;
-  
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
-  padding: 0;
-  margin: 0;
-  border: none;
-  background: transparent;
-  border-radius: 4px;
-  cursor: pointer;
-  color: #a0aec0; 
+/* Placeholder on the empty block under the caret ("Heading 1", "List", "Type '/' for commands"). */
+.richEditor :global(.ProseMirror .is-empty::before) {
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+  color: var(--chakra-colors-fg-subtle);
 }
 
-.openDropdown:hover {
-  background-color: #e2e8f0; 
-  color: #4a5568;
+/* Headings */
+.richEditor :global(.ProseMirror :is(h1, h2, h3, h4, h5, h6)) {
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
 }
-
-.richEditor:hover .openDropdown {
-  opacity: 1;
-}
-
 .richEditor :global(.ProseMirror h1) {
-  font-size: 2em;
-  font-weight: bold;
-  margin-top: 0.67em;
-  margin-bottom: 0.67em;
+  font-size: 1.875em;
+  margin-top: 1.25em;
 }
-
 .richEditor :global(.ProseMirror h2) {
   font-size: 1.5em;
-  font-weight: bold;
-  margin-top: 0.83em;
-  margin-bottom: 0.83em;
+  margin-top: 1.1em;
 }
-
 .richEditor :global(.ProseMirror h3) {
-  font-size: 1.17em;
-  font-weight: bold;
+  font-size: 1.25em;
+  font-weight: 600;
   margin-top: 1em;
-  margin-bottom: 1em;
+}
+.richEditor :global(.ProseMirror :is(h4, h5, h6)) {
+  font-size: 1em;
+  font-weight: 600;
+  margin-top: 1em;
+}
+.richEditor :global(.ProseMirror :is(h5, h6)) {
+  color: var(--chakra-colors-fg-muted);
+}
+.richEditor :global(.ProseMirror > :is(h1, h2, h3, h4, h5, h6):first-child) {
+  margin-top: 0;
 }
 
+/* Lists */
+.richEditor :global(.ProseMirror :is(ul, ol)) {
+  padding-left: 1.5em;
+}
 .richEditor :global(.ProseMirror ul) {
   list-style-type: disc;
-  padding-left: 20px;
 }
-
+.richEditor :global(.ProseMirror ul ul) {
+  list-style-type: circle;
+}
 .richEditor :global(.ProseMirror ol) {
   list-style-type: decimal;
-  padding-left: 20px;
+}
+.richEditor :global(.ProseMirror li + li),
+.richEditor :global(.ProseMirror li > :is(ul, ol)) {
+  margin-top: 0.25em;
+}
+.richEditor :global(.ProseMirror li::marker) {
+  color: var(--chakra-colors-fg-muted);
+}
+
+/* Task lists (the task item node view renders a plain <li>) */
+.richEditor :global(.ProseMirror ul[data-type='taskList']) {
+  list-style: none;
+  padding-left: 0.25em;
+}
+.richEditor :global(.ProseMirror ul[data-type='taskList'] ul[data-type='taskList']) {
+  padding-left: 1.5em;
+}
+.richEditor :global(.ProseMirror ul[data-type='taskList'] > li) {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5em;
+}
+.richEditor :global(.ProseMirror ul[data-type='taskList'] > li > label) {
+  flex: none;
+  margin-top: 0.3em;
+  user-select: none;
+}
+.richEditor :global(.ProseMirror ul[data-type='taskList'] > li > label input) {
+  width: 1em;
+  height: 1em;
+  cursor: pointer;
+  accent-color: var(--chakra-colors-blue-solid);
+}
+.richEditor :global(.ProseMirror ul[data-type='taskList'] > li > div) {
+  flex: 1;
+  min-width: 0;
+}
+.richEditor :global(.ProseMirror ul[data-type='taskList'] > li[data-checked='true'] > div > p) {
+  color: var(--chakra-colors-fg-subtle);
+  text-decoration: line-through;
+}
+
+/* Quotes */
+.richEditor :global(.ProseMirror blockquote) {
+  border-left: 3px solid var(--chakra-colors-border-emphasized);
+  padding-left: 1em;
+  color: var(--chakra-colors-fg-muted);
+}
+
+/* Code */
+.richEditor :global(.ProseMirror code) {
+  font-family: var(--chakra-fonts-mono);
+  font-size: 0.875em;
+  background: var(--chakra-colors-bg-muted);
+  border-radius: 4px;
+  padding: 0.1em 0.35em;
+}
+.richEditor :global(.ProseMirror pre) {
+  font-family: var(--chakra-fonts-mono);
+  font-size: 0.875em;
+  line-height: 1.6;
+  background: var(--chakra-colors-bg-subtle);
+  border: 1px solid var(--chakra-colors-border);
+  border-radius: 8px;
+  padding: 0.75em 1em;
+  overflow-x: auto;
+  white-space: pre;
+}
+.richEditor :global(.ProseMirror pre code) {
+  background: none;
+  padding: 0;
+  font-size: inherit;
+}
+
+/* Links: clicking places the caret; Mod+click or the link menu opens them. */
+.richEditor :global(.ProseMirror a) {
+  color: var(--chakra-colors-blue-fg);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  cursor: text;
+}
+
+.richEditor :global(.ProseMirror hr) {
+  border: none;
+  border-top: 1px solid var(--chakra-colors-border);
+  margin-block: 1.5em;
+}
+
+/* A selected block node (e.g. a sub-note reference). */
+.richEditor :global(.ProseMirror-selectednode) {
+  outline: 2px solid var(--chakra-colors-blue-focus-ring);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* The class lands on an inner element; the positioned wrapper must stack above the block handle. */
+.richEditor div:has(> .selectionMenu),
+.selectionMenu {
+  z-index: 20;
 }

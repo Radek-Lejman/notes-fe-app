@@ -1,91 +1,53 @@
-import { ReactRenderer } from '@tiptap/react';
-import tippy, { type Instance as TippyInstance } from 'tippy.js';
+import type { Editor, Range } from '@tiptap/core';
 import { CommandSuggestionList } from '../../../ui/RichEditor/SlashCommand/CommandSuggestionList';
 import {
   type CommandItem,
-  type CommandSuggestionListRef,
+  type CommandSuggestionListProps,
 } from '../../../ui/RichEditor/SlashCommand/types';
-import { handleEditorAction } from '../../editorActions';
-import { richEditorMenu } from '../../../config/editor/menu.config';
-import type { Editor } from '@tiptap/core';
-import { type Range } from '@tiptap/core';
-import { type SuggestionProps, type SuggestionKeyDownProps } from '@tiptap/suggestion';
 import type { CustomSlashMenuItem } from '../../../ui/RichEditor/types';
+import { BLOCK_GROUP_LABELS, blockCommands, rankByQuery } from '../commands';
+import { createFloatingRenderer } from './floatingSuggestion';
+import { SLASH_COMMAND_PLUGIN_KEY } from './SlashCommand';
 
-export const createSuggestionOptions = (customItems: CustomSlashMenuItem[] = []) => ({
-  items: ({ query }: { query: string }) => {
-    const allItems: CustomSlashMenuItem[] = [...customItems, ...richEditorMenu.menu];
+const CUSTOM_GROUP = 'Notes';
 
-    return allItems
-      .filter((item) => item.label.toLowerCase().includes(query.toLowerCase()))
-      .slice(0, 10)
-      .map((item) => ({
-        ...item,
-        command: ({ editor, range }: { editor: Editor; range: Range }) => {
-          editor.chain().focus().deleteRange(range).run();
+const toItems = (customItems: CustomSlashMenuItem[]): CommandItem[] => [
+  ...blockCommands.map((block) => ({
+    id: block.id,
+    label: block.label,
+    description: block.description,
+    icon: block.icon,
+    group: BLOCK_GROUP_LABELS[block.group],
+    shortcut: block.shortcut,
+    keywords: block.keywords,
+    command: ({ editor, range }: { editor: Editor; range: Range }) => {
+      editor.chain().focus().deleteRange(range).run();
+      block.run(editor);
+    },
+  })),
+  ...customItems.map((item) => ({
+    id: item.value,
+    label: item.label,
+    description: item.description,
+    icon: item.icon,
+    group: item.group ?? CUSTOM_GROUP,
+    shortcut: item.shortcut,
+    keywords: item.keywords,
+    command: ({ editor, range }: { editor: Editor; range: Range }) => {
+      editor.chain().focus().deleteRange(range).run();
+      item.action?.(editor);
+    },
+  })),
+];
 
-          if (item.action) {
-            item.action(editor);
-          } else {
-            handleEditorAction(editor, item.value);
-          }
-        },
-      }));
-  },
-  render: () => {
-    let component: ReactRenderer<CommandSuggestionListRef>;
-    let popup: TippyInstance[];
+export const createSuggestionOptions = (customItems: CustomSlashMenuItem[] = []) => {
+  const allItems = toItems(customItems);
 
-    return {
-      onStart: (props: SuggestionProps<CommandItem>) => {
-        component = new ReactRenderer(CommandSuggestionList, {
-          props,
-          editor: props.editor,
-        });
-
-        if (!props.clientRect) {
-          return;
-        }
-
-        popup = tippy('body', {
-          getReferenceClientRect: () => props.clientRect?.() as DOMRect,
-          appendTo: () => document.body,
-          content: component.element,
-          showOnCreate: true,
-          interactive: true,
-          trigger: 'manual',
-          placement: 'bottom-start',
-        });
-      },
-
-      onUpdate(props: SuggestionProps<CommandItem>) {
-        component.updateProps(props);
-
-        if (!props.clientRect) {
-          return;
-        }
-
-        popup[0].setProps({
-          getReferenceClientRect: () => props.clientRect?.() as DOMRect,
-        });
-      },
-
-      onKeyDown(props: SuggestionKeyDownProps) {
-        if (props.event.key === 'Escape') {
-          popup[0].hide();
-          return true;
-        }
-        return component.ref?.onKeyDown(props) ?? false;
-      },
-
-      onExit() {
-        if (popup && popup.length > 0) {
-          popup[0].destroy();
-        }
-        if (component) {
-          component.destroy();
-        }
-      },
-    };
-  },
-});
+  return {
+    items: ({ query }: { query: string }) => rankByQuery(allItems, query),
+    render: createFloatingRenderer<CommandItem, CommandSuggestionListProps>(
+      CommandSuggestionList,
+      SLASH_COMMAND_PLUGIN_KEY,
+    ),
+  };
+};

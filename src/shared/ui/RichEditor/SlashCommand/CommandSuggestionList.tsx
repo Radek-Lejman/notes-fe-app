@@ -1,105 +1,151 @@
-import { useState, useEffect, forwardRef, useImperativeHandle, useRef } from 'react';
-import { Box, Button, Text } from '@chakra-ui/react';
+import { useState, useEffect, forwardRef, useImperativeHandle, useRef, Fragment } from 'react';
+import { Box, Flex, Kbd, Text } from '@chakra-ui/react';
+import { formatShortcut } from '../../../lib/editor/commands';
 import { type CommandSuggestionListProps, type CommandSuggestionListRef } from './types';
 
 export const CommandSuggestionList = forwardRef<
   CommandSuggestionListRef,
   CommandSuggestionListProps
->((props, ref) => {
+>(({ items, query, command }, ref) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const itemRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   const selectItem = (index: number) => {
-    const item = props.items[index];
-    if (item) {
-      props.command(item);
-    }
-  };
-
-  const upHandler = () => {
-    setSelectedIndex((selectedIndex + props.items.length - 1) % props.items.length);
-  };
-
-  const downHandler = () => {
-    setSelectedIndex((selectedIndex + 1) % props.items.length);
-  };
-
-  const enterHandler = () => {
-    selectItem(selectedIndex);
+    const item = items[index];
+    if (item) command(item);
   };
 
   useEffect(() => {
     setSelectedIndex(0);
-  }, [props.items]);
+  }, [items]);
 
   useEffect(() => {
-    if (itemRefs.current[selectedIndex]) {
-      itemRefs.current[selectedIndex]?.scrollIntoView({
-        block: 'nearest',
-        behavior: 'smooth',
-      });
-    }
+    itemRefs.current[selectedIndex]?.scrollIntoView({ block: 'nearest' });
   }, [selectedIndex]);
 
   useImperativeHandle(ref, () => ({
     onKeyDown: ({ event }: { event: KeyboardEvent }) => {
+      if (items.length === 0) return false;
       if (event.key === 'ArrowUp') {
-        upHandler();
+        setSelectedIndex((selectedIndex + items.length - 1) % items.length);
         return true;
       }
       if (event.key === 'ArrowDown') {
-        downHandler();
+        setSelectedIndex((selectedIndex + 1) % items.length);
         return true;
       }
-      if (event.key === 'Enter') {
-        enterHandler();
+      if (event.key === 'Enter' || event.key === 'Tab') {
+        selectItem(selectedIndex);
         return true;
       }
       return false;
     },
   }));
 
+  // Groups only make sense for the full list; a filtered list is ranked by relevance.
+  const showGroups = query.trim() === '';
+
   return (
     <Box
-      bg="white"
-      borderRadius="md"
+      bg="bg.panel"
+      color="fg"
+      borderWidth="1px"
+      borderColor="border"
+      borderRadius="lg"
       boxShadow="lg"
+      w="20rem"
+      maxW="calc(100vw - 16px)"
       overflow="hidden"
-      display="flex"
-      flexDirection="column"
-      p={1}
-      minW="12rem"
-      maxW="20rem"
-      maxH="20rem"
-      overflowY="auto"
     >
-      {props.items.length > 0 ? (
-        props.items.map((item, index) => (
-          <Button
-            key={index}
-            ref={(el) => {
-              itemRefs.current[index] = el;
-            }}
-            variant="ghost"
-            justifyContent="flex-start"
-            size="sm"
-            fontWeight={index === selectedIndex ? 'medium' : 'normal'}
-            bg={index === selectedIndex ? 'gray.100' : 'transparent'}
-            color={index === selectedIndex ? 'gray.900' : 'gray.700'}
-            _hover={{
-              bg: 'gray.100',
-              color: 'gray.900',
-            }}
-            onClick={() => selectItem(index)}
-          >
-            {item.label}
-          </Button>
-        ))
-      ) : (
-        <Text fontSize="sm" color="gray.500" p={2} textAlign="center">
-          No results
-        </Text>
-      )}
+      <Box role="listbox" aria-label="Insert block" maxH="min(22rem, 50vh)" overflowY="auto" p={1}>
+        {items.length === 0 && (
+          <Text fontSize="sm" color="fg.muted" px={3} py={3}>
+            No matching blocks
+          </Text>
+        )}
+        {items.map((item, index) => {
+          const isSelected = index === selectedIndex;
+          const Icon = item.icon;
+          const startsGroup = showGroups && item.group !== items[index - 1]?.group;
+
+          return (
+            <Fragment key={item.id}>
+              {startsGroup && (
+                <Text
+                  fontSize="2xs"
+                  fontWeight="semibold"
+                  letterSpacing="wider"
+                  textTransform="uppercase"
+                  color="fg.subtle"
+                  px={2}
+                  pt={index === 0 ? 1.5 : 3}
+                  pb={1}
+                >
+                  {item.group}
+                </Text>
+              )}
+              <Flex
+                ref={(el) => {
+                  itemRefs.current[index] = el;
+                }}
+                role="option"
+                aria-selected={isSelected}
+                align="center"
+                gap={2.5}
+                px={2}
+                py={1.5}
+                borderRadius="md"
+                cursor="pointer"
+                bg={isSelected ? 'bg.muted' : 'transparent'}
+                onMouseEnter={() => setSelectedIndex(index)}
+                // Keep focus (and the typed "/query") in the editor.
+                onMouseDown={(event) => event.preventDefault()}
+                onClick={() => selectItem(index)}
+              >
+                <Flex
+                  flex="none"
+                  w={8}
+                  h={8}
+                  align="center"
+                  justify="center"
+                  borderWidth="1px"
+                  borderColor="border"
+                  borderRadius="md"
+                  bg="bg"
+                  color="fg.muted"
+                  fontSize="md"
+                >
+                  {Icon && <Icon />}
+                </Flex>
+                <Box minW={0} flex="1">
+                  <Text fontSize="sm" fontWeight="medium" lineHeight="short">
+                    {item.label}
+                  </Text>
+                  {item.description && (
+                    <Text fontSize="xs" color="fg.muted" truncate>
+                      {item.description}
+                    </Text>
+                  )}
+                </Box>
+                {item.shortcut && <Kbd size="sm">{formatShortcut(item.shortcut)}</Kbd>}
+              </Flex>
+            </Fragment>
+          );
+        })}
+      </Box>
+      <Flex
+        gap={3}
+        px={3}
+        py={1.5}
+        borderTopWidth="1px"
+        borderColor="border"
+        fontSize="xs"
+        color="fg.subtle"
+      >
+        <Text>↑↓ navigate</Text>
+        <Text>↵ select</Text>
+        <Text>esc close</Text>
+      </Flex>
     </Box>
   );
 });

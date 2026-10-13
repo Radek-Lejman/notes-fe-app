@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { Dialog, Input, Text, Flex, Button } from '@chakra-ui/react';
 import { useRichEditorContext } from '@shared/ui/RichEditor';
+import { getEditorMarkdown } from '@shared/lib/editor/markdown';
 import { useNoteEditorContext } from '../../model/NoteEditorContext';
 
 export interface NestedNoteCreatorProps {
@@ -35,7 +36,7 @@ export const NestedNoteCreator = ({
         .insertPageReference({ noteId: newPage.id, title: newPage.title })
         .run();
       closeDialog();
-      commitEditorState(editor.getJSON());
+      commitEditorState(getEditorMarkdown(editor));
     },
   });
 
