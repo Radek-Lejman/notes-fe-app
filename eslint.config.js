@@ -6,6 +6,7 @@ import tseslint from 'typescript-eslint'
 import pluginQuery from '@tanstack/eslint-plugin-query'
 import featureSliced from '@conarti/eslint-plugin-feature-sliced'
 import prettierConfig from 'eslint-config-prettier'
+import vitest from '@vitest/eslint-plugin'
 
 export default tseslint.config(
   { ignores: ['dist'] },
@@ -48,6 +49,15 @@ export default tseslint.config(
       'feature-sliced/layers-slices': 'error',
       'feature-sliced/absolute-relative': 'error',
       'feature-sliced/public-api': 'error',
+    },
+  },
+  {
+    files: ['**/*.test.{ts,tsx}'],
+    plugins: { vitest },
+    rules: {
+      // AI agents tend to silence failing tests instead of fixing them
+      'vitest/no-focused-tests': 'error',
+      'vitest/no-disabled-tests': 'error',
     },
   },
 )

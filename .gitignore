@@ -37,3 +37,6 @@ dist-ssr
 
 # test coverage
 coverage/
+
+# curl cookie jar (may contain session tokens)
+cookies.txt
