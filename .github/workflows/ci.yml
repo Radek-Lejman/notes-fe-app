@@ -1,0 +1,74 @@
+# Gates for every pushed commit (notes-app-be/docs/ai-dev-system/CI.md). Job names are the
+# required status checks of the main ruleset — renaming a job means updating the ruleset.
+name: CI
+
+on:
+  push:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  GITLEAKS_VERSION: 8.30.1
+
+jobs:
+  verify:
+    name: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm run format:check
+      - run: npm test
+      # `npm run build` would run `tsc -b` a second time.
+      - run: npx vite build
+
+  secrets:
+    name: secrets
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - name: Install gitleaks
+        run: |
+          archive="gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz"
+          base="https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}"
+          curl -sSfLO "$base/$archive"
+          curl -sSfL "$base/gitleaks_${GITLEAKS_VERSION}_checksums.txt" | grep " $archive\$" | sha256sum -c -
+          tar -xzf "$archive" gitleaks
+      - name: Scan full history
+        run: ./gitleaks git --redact --verbose --exit-code 1 .
+
+  audit:
+    name: audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+      # Report only (CI.md §7): known high/critical advisories in dependencies are a separate task.
+      - name: npm audit (production dependencies)
+        continue-on-error: true
+        run: |
+          {
+            echo '### npm audit --omit=dev --audit-level=high'
+            echo '```'
+            npm audit --omit=dev --audit-level=high 2>&1 | tail -n 15
+            echo '```'
+          } | tee -a "$GITHUB_STEP_SUMMARY"
