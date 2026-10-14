@@ -40,3 +40,7 @@ coverage/
 
 # curl cookie jar (may contain session tokens)
 cookies.txt
+
+# Claude Code: personal settings stay local
+.claude/settings.local.json
+CLAUDE.local.md
