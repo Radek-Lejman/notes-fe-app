@@ -39,7 +39,7 @@ Enforced by `@conarti/eslint-plugin-feature-sliced` (`layers-slices`, `absolute-
 
 - HTTP via `@shared/api` (`apiClient`): cookies (`withCredentials`), CSRF token fetched lazily and retried on 403, silent refresh on 401 with a request queue. No tokens in `localStorage`.
 - Server state in TanStack Query with query-key factories in `entities/*/api`; no copying server data into local state.
-- Note content is markdown (single source of truth for display, FTS and RAG). The markdown rules in `src/shared/lib/editor/markdown/` must stay identical to BE `src/modules/notes/utils/markdown/`. Golden fixtures are generated here (`UPDATE_GOLDEN=1 npm test`) and copied to BE `src/modules/notes/utils/__fixtures__/markdown/`; a serializer change without updated fixtures in both repos is a bug.
+- Note content is markdown (single source of truth for display, FTS and RAG). The markdown serializer lives only here (`src/shared/lib/editor/markdown/`; the BE stores and searches markdown as text). Golden fixtures: `UPDATE_GOLDEN=1 npm test`; a serializer change without updated fixtures is a bug.
 - Tests `*.test.ts(x)` next to the file; helpers in `src/shared/lib/test/` (`render.tsx`, `axios.ts`, `editor.ts`). Known defects as `it.fails` (see `docs/testing/README.md`).
 - TypeScript is `strict`; `no-explicit-any`, `no-floating-promises`, `no-misused-promises`, `consistent-type-imports` are errors.
 - Conventional commits, small commits.
