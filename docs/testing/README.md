@@ -1,111 +1,111 @@
-# Testy FE — co nie jest pokryte i dlaczego
+# FE tests — what is not covered and why
 
-Stan: 2026-10-11 · 37 plików, 418 testów · pokrycie: **90,4% instrukcji · 91,4% gałęzi · 86,2% funkcji**
+State: 2026-10-11 · 37 files, 418 tests · coverage: **90.4% statements · 91.4% branches · 86.2% functions**
 
-Pełny audyt (wymagania, koncepcja, znalezione defekty): [unit-test-audit.md](./unit-test-audit.md).
+Full audit (requirements, approach, defects found): [unit-test-audit.md](./unit-test-audit.md).
 
-## Uruchamianie
+## Running
 
 ```bash
 npm test                # vitest run (~11 s)
 npm run test:watch
-npm run test:coverage   # podsumowanie w konsoli + raport HTML w coverage/index.html
+npm run test:coverage   # summary in the console + HTML report in coverage/index.html
 ```
 
-Infrastruktura testowa: `src/shared/lib/test/` (setup, render z providerami, testowy klient axios, sterowanie edytorem) i `src/shared/ui/RichEditor/editorTestHarness.tsx`.
+Test infrastructure: `src/shared/lib/test/` (setup, render with providers, a test axios client, editor control) and `src/shared/ui/RichEditor/editorTestHarness.tsx`.
 
-## Zasada
+## Principle
 
-Celem nie jest 100%. Pokrycie mierzy wykonane linie, a nie sprawdzone zachowanie, a ostatnie procenty zwykle dobija się testami bez wartości (zob. `KONCEPCJA.md` §4). Niepokryte miejsca należą do jednej z kategorii poniżej, każda z decyzją, co z nią robić.
+The goal is not 100%. Coverage measures executed lines, not checked behaviour, and the last percent is usually reached with worthless tests (see `notes-app-be/docs/ai-dev-system/CONCEPT.md` §4). Uncovered spots belong to one of the categories below, each with a decision on what to do with it.
 
-| Kategoria                                    | Decyzja                             |
-| -------------------------------------------- | ----------------------------------- |
-| A. Wymaga prawdziwej przeglądarki            | testy E2E (Playwright), nie unit    |
-| B. Konfiguracja aplikacji (composition root) | bez testów jednostkowych            |
-| C. Martwy lub niedokończony kod              | usunąć albo dokończyć, nie testować |
-| D. Gałęzie obronne                           | świadomie bez testów                |
-| E. Realna logika bez testu                   | **kandydaci do uzupełnienia**       |
+| Category                                | Decision                            |
+| --------------------------------------- | ----------------------------------- |
+| A. Needs a real browser                 | E2E tests (Playwright), not unit    |
+| B. App configuration (composition root) | no unit tests                       |
+| C. Dead or unfinished code              | delete or finish it, do not test it |
+| D. Defensive branches                   | deliberately untested               |
+| E. Real logic without a test            | **candidates to add**               |
 
-## A. Wymaga prawdziwej przeglądarki → E2E
+## A. Needs a real browser → E2E
 
-jsdom nie liczy układu strony: elementy nie mają rozmiarów ani pozycji, nie ma `posAtCoords`, `visualViewport` ani prawdziwego drag & drop. Test jednostkowy musiałby to wszystko podmienić i sprawdzałby wtedy własne podmiany, a nie aplikację.
+jsdom does not compute layout: elements have no sizes or positions, there is no `posAtCoords`, `visualViewport` or real drag & drop. A unit test would have to replace all of that and would then test its own replacements, not the app.
 
-| Plik                                               | Pokrycie | Co nie jest pokryte                                                                                        | Co jest pokryte gdzie indziej                                                                                |
-| -------------------------------------------------- | -------- | ---------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
-| `shared/ui/RichEditor/RichEditorBlockHandle.tsx`   | 50%      | śledzenie bloku pod kursorem myszy, pozycja uchwytu, przeciąganie bloków, menu uchwytu                     | komendy, które menu wywołuje (przesuwanie, duplikowanie, usuwanie, wstawianie bloku): `BlockActions.test.ts` |
-| `shared/ui/RichEditor/RichEditorMobileToolbar.tsx` | 15%      | pasek nad klawiaturą ekranową: widoczny tylko przy `pointer: coarse`, położenie liczone z `visualViewport` | komendy formatowania i bloków: `commands.test.ts`, `RichEditorBubbleMenu.test.tsx`                           |
+| File                                               | Coverage | What is not covered                                                                                                | What is covered elsewhere                                                                   |
+| -------------------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------- |
+| `shared/ui/RichEditor/RichEditorBlockHandle.tsx`   | 50%      | tracking the block under the mouse cursor, the handle position, dragging blocks, the handle menu                   | the commands the menu calls (move, duplicate, delete, insert block): `BlockActions.test.ts` |
+| `shared/ui/RichEditor/RichEditorMobileToolbar.tsx` | 15%      | the bar above the on-screen keyboard: visible only with `pointer: coarse`, position computed from `visualViewport` | formatting and block commands: `commands.test.ts`, `RichEditorBubbleMenu.test.tsx`          |
 
-**Do zrobienia:** E2E dla przeciągania bloków i menu uchwytu (desktop) oraz dla paska na emulacji telefonu. Pasek mobilny da się ewentualnie przetestować jednostkowo z `matchMedia('(pointer: coarse)')` → `true`, ale sprawdziłoby to tylko podpięcie przycisków.
+**To do:** E2E for dragging blocks and the handle menu (desktop) and for the bar on phone emulation. The mobile bar could be unit-tested with `matchMedia('(pointer: coarse)')` → `true`, but that would only check the button wiring.
 
-## B. Konfiguracja aplikacji (composition root)
+## B. App configuration (composition root)
 
-| Plik                                                               | Pokrycie            | Dlaczego bez testów                                                                                                                                                                                      |
-| ------------------------------------------------------------------ | ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `app/providers/**` (Chakra, kolory, toaster, tooltip, React Query) | 0%                  | tylko konfiguracja bibliotek, bez własnej logiki; testy używają tych samych providerów przez `renderWithProviders`                                                                                       |
-| `app/init.ts`                                                      | 0%                  | rejestruje interceptor CSRF; **kolejność interceptorów, czyli jedyną istotną rzecz w tym pliku, sprawdza test defektu D1** (interceptor CSRF działa przy obu kolejnościach) w `csrf.interceptor.test.ts` |
-| `main.tsx`                                                         | wyłączony z pomiaru | punkt wejścia (montowanie Reacta)                                                                                                                                                                        |
+| File                                                                | Coverage                  | Why no tests                                                                                                                                                                                                       |
+| ------------------------------------------------------------------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `app/providers/**` (Chakra, colours, toaster, tooltip, React Query) | 0%                        | library configuration only, no own logic; tests use the same providers via `renderWithProviders`                                                                                                                   |
+| `app/init.ts`                                                       | 0%                        | registers the CSRF interceptor; **the interceptor order, the only thing that matters in this file, is checked by the D1 defect test** (the CSRF interceptor works with either order) in `csrf.interceptor.test.ts` |
+| `main.tsx`                                                          | excluded from measurement | the entry point (mounting React)                                                                                                                                                                                   |
 
-Właściwe miejsce na sprawdzenie, że aplikacja startuje, to jeden smoke test E2E.
+The right place to check that the app starts is a single E2E smoke test.
 
-## C. Martwy lub niedokończony kod
+## C. Dead or unfinished code
 
-Testowanie tych miejsc utrwaliłoby kod, który powinien zniknąć albo zostać dokończony.
+Testing these spots would cement code that should disappear or be finished.
 
-| Plik / linie                                                                 | Stan                                             | Decyzja                                                                |
-| ---------------------------------------------------------------------------- | ------------------------------------------------ | ---------------------------------------------------------------------- |
-| `widgets/SidePanelWidget/ui/SidePanelSectionError/SidePanelSectionError.tsx` | nigdzie nieużywany                               | usunąć                                                                 |
-| `shared/ui/layouts/SidePanel/SidePanel.tsx` 76–90 (`SidePanelFooter`)        | nigdzie nieużywany                               | usunąć albo użyć (np. na wylogowanie, którego w UI brakuje)            |
-| `features/manage-notes/ui/DeleteNoteAction/DeleteNoteAction.tsx` 10–11       | przycisk tylko loguje do konsoli (defekt **D5**) | dokończyć usuwanie albo ukryć przycisk; test powstanie razem z funkcją |
-| `pages/WelcomePage/ui/WelcomeHero.tsx` 14                                    | prop `username` nigdy nie jest przekazywany      | przekazać e-mail z sesji albo usunąć prop                              |
-| `shared/ui/AppAlert/AppAlert.tsx` 15                                         | prop `title` nigdy nie jest używany              | zostawić (komponent bazowy) albo usunąć                                |
+| File / lines                                                                 | State                                               | Decision                                                            |
+| ---------------------------------------------------------------------------- | --------------------------------------------------- | ------------------------------------------------------------------- |
+| `widgets/SidePanelWidget/ui/SidePanelSectionError/SidePanelSectionError.tsx` | used nowhere                                        | delete                                                              |
+| `shared/ui/layouts/SidePanel/SidePanel.tsx` 76–90 (`SidePanelFooter`)        | used nowhere                                        | delete or use it (e.g. for logout, which the UI lacks)              |
+| `features/manage-notes/ui/DeleteNoteAction/DeleteNoteAction.tsx` 10–11       | the button only logs to the console (defect **D5**) | finish deletion or hide the button; the test comes with the feature |
+| `pages/WelcomePage/ui/WelcomeHero.tsx` 14                                    | the `username` prop is never passed                 | pass the email from the session or remove the prop                  |
+| `shared/ui/AppAlert/AppAlert.tsx` 15                                         | the `title` prop is never used                      | keep it (a base component) or remove it                             |
 
-## D. Gałęzie obronne — świadomie bez testów
+## D. Defensive branches — deliberately untested
 
-Zabezpieczenia na sytuacje, które przy obecnym kodzie nie występują. Test wymagałby sztucznego zepsucia konfiguracji, a nie sprawdzałby zachowania widocznego dla użytkownika.
+Safeguards for situations that do not occur with the current code. A test would require artificially breaking the configuration and would not check behaviour visible to the user.
 
-| Plik / linie                                                      | Gałąź                                                                                | Dlaczego nie występuje                                                                  |
-| ----------------------------------------------------------------- | ------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------- |
-| `shared/lib/editor/ai.ts` (gałęzie 49, 54–57, 78–79)              | wyjątek, gdy edytor nie ma rozszerzenia Markdown; puste `content` po parsowaniu      | `RichEditorRoot` zawsze rejestruje Markdown                                             |
-| `shared/lib/editor/extensions/BlockActions.ts` (gałęzie ~105–123) | `return false`, gdy w schemacie nie ma `paragraph` lub `createAndFill` zwróci `null` | schemat edytora zawsze ma te węzły                                                      |
-| `shared/api/axios/interceptors/error.interceptor.ts` 21–22        | komunikat `'Unknown API error'`                                                      | axios zawsze ustawia `error.message`                                                    |
-| `widgets/SidePanelWidget/model/useSidePanelLogic.ts` 11           | `notes.data \|\| []`                                                                 | `useSuspenseQuery` gwarantuje dane                                                      |
-| `features/note-search/ui/NoteSearchFilters.tsx` 18, 37, 56        | `\|\| DEFAULT_SEARCH_FILTERS.*`                                                      | filtry zawsze startują od wartości domyślnych                                           |
-| `features/manage-notes/lib/tiptap/PageReferenceNodeView.tsx` 36   | tytuł `'Untitled Page'`                                                              | markdown zawsze daje tytuł; fallback „Untitled” przy zapisie testuje `markdown.test.ts` |
-| `widgets/NoteEditorWidget/ui/NoteCreateWidget.tsx` 28             | komunikat `'Server connection error'` przy pustym `error.message`                    | `ApiError` zawsze ma komunikat                                                          |
+| File / lines                                                       | Branch                                                                                | Why it does not occur                                                                             |
+| ------------------------------------------------------------------ | ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| `shared/lib/editor/ai.ts` (branches 49, 54–57, 78–79)              | an exception when the editor has no Markdown extension; empty `content` after parsing | `RichEditorRoot` always registers Markdown                                                        |
+| `shared/lib/editor/extensions/BlockActions.ts` (branches ~105–123) | `return false` when the schema has no `paragraph` or `createAndFill` returns `null`   | the editor schema always has these nodes                                                          |
+| `shared/api/axios/interceptors/error.interceptor.ts` 21–22         | the `'Unknown API error'` message                                                     | axios always sets `error.message`                                                                 |
+| `widgets/SidePanelWidget/model/useSidePanelLogic.ts` 11            | `notes.data \|\| []`                                                                  | `useSuspenseQuery` guarantees data                                                                |
+| `features/note-search/ui/NoteSearchFilters.tsx` 18, 37, 56         | `\|\| DEFAULT_SEARCH_FILTERS.*`                                                       | filters always start from the defaults                                                            |
+| `features/manage-notes/lib/tiptap/PageReferenceNodeView.tsx` 36    | the `'Untitled Page'` title                                                           | markdown always provides a title; the "Untitled" fallback on save is tested by `markdown.test.ts` |
+| `widgets/NoteEditorWidget/ui/NoteCreateWidget.tsx` 28              | the `'Server connection error'` message for an empty `error.message`                  | `ApiError` always has a message                                                                   |
 
-## E. Realna logika bez testu — kandydaci do uzupełnienia
+## E. Real logic without a test — candidates to add
 
-Tanie do dopisania i sprawdzają rzeczy, które użytkownik zauważy. Rekomendacja: dopisać przy najbliższej zmianie w danym pliku.
+Cheap to add and they check things the user will notice. Recommendation: add them with the next change in the given file.
 
-| Plik / linie                                               | Co nie jest sprawdzone                                                                                                 | Jak przetestować                                                                                               |
-| ---------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| `shared/ui/RichEditor/NoteLink/NoteLinkList.tsx` 24–30, 36 | nawigacja strzałkami w pickerze `[[` (zawijanie listy, nieobsłużony klawisz)                                           | jak w `editorMenus.test.tsx` › slash menu › _arrow keys_, tylko z `[[`                                         |
-| `shared/lib/editor/link.ts` 34–36                          | zatwierdzenie pustego adresu w edytorze linku usuwa link                                                               | `RichEditorBubbleMenu.test.tsx`: Mod+K na linku, wyczyść pole, Enter                                           |
-| `shared/api/axios/client.ts` 17–18                         | po nieudanym odświeżeniu sesji czyszczony jest cache React Query (dane poprzedniego użytkownika nie zostają w pamięci) | podmienić adapter `apiClient` w teście, wymusić 401 z `/auth/refresh` i sprawdzić, że `queryClient` jest pusty |
-| `widgets/NoteEditorWidget/ui/NoteEditWidget.tsx` 32–33     | kliknięcie odnośnika do podnotatki otwiera ją w aplikacji                                                              | `NoteEditPage.test.tsx`: kliknąć przycisk podnotatki i sprawdzić ścieżkę przez `LocationProbe`                 |
+| File / lines                                               | What is not checked                                                                                                | How to test                                                                                                       |
+| ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------- |
+| `shared/ui/RichEditor/NoteLink/NoteLinkList.tsx` 24–30, 36 | arrow-key navigation in the `[[` picker (list wrapping, an unhandled key)                                          | as in `editorMenus.test.tsx` › slash menu › _arrow keys_, only with `[[`                                          |
+| `shared/lib/editor/link.ts` 34–36                          | confirming an empty address in the link editor removes the link                                                    | `RichEditorBubbleMenu.test.tsx`: Mod+K on a link, clear the field, Enter                                          |
+| `shared/api/axios/client.ts` 17–18                         | after a failed session refresh the React Query cache is cleared (the previous user's data does not stay in memory) | replace the `apiClient` adapter in a test, force a 401 from `/auth/refresh` and check that `queryClient` is empty |
+| `widgets/NoteEditorWidget/ui/NoteEditWidget.tsx` 32–33     | clicking a link to a sub-note opens it in the app                                                                  | `NoteEditPage.test.tsx`: click the sub-note button and check the path via `LocationProbe`                         |
 
-Najważniejsza pozycja to `client.ts`: dotyczy danych użytkownika po wygaśnięciu sesji.
+The most important item is `client.ts`: it concerns user data after the session expires.
 
-## Testy znanych defektów (`it.fails`)
+## Known-defect tests (`it.fails`)
 
-Test `it.fails` opisuje **poprawne** zachowanie i dziś pada, bo w aplikacji jest błąd. Zestaw jest zielony, a błąd widoczny. Po naprawie test zacznie failować; wtedy usuń `.fails`.
+An `it.fails` test describes the **correct** behaviour and fails today because of a bug in the app. The suite is green and the bug is visible. After the fix the test starts failing; then remove `.fails`.
 
-Obecnie brak otwartych defektów z testem `it.fails`. Naprawione (dziś zwykłe `it`):
+There are currently no open defects with an `it.fails` test. Fixed (plain `it` today):
 
-| Defekt                                         | Test                                                     |
-| ---------------------------------------------- | -------------------------------------------------------- |
-| D1: ponawianie po 403 CSRF nigdy nie działało  | `shared/api/axios/interceptors/csrf.interceptor.test.ts` |
-| D2: ponawianie po 403 bez limitu (pętla)       | jw.                                                      |
-| D3: odwrócone etykiety sortowania po tytule    | `features/note-search/noteSearch.test.tsx`               |
-| D4: duplikaty notatek przy tworzeniu           | `pages/NoteEditPage/NoteEditPage.test.tsx`               |
-| D6: link „Settings” bez trasy                  | `app/routes/AppRoutes.test.tsx`                          |
-| D8: biały ekran przy błędzie ładowania notatki | `pages/NoteEditPage/NoteEditPage.test.tsx`               |
+| Defect                                            | Test                                                     |
+| ------------------------------------------------- | -------------------------------------------------------- |
+| D1: retrying after a CSRF 403 never worked        | `shared/api/axios/interceptors/csrf.interceptor.test.ts` |
+| D2: retrying after a 403 without a limit (a loop) | as above                                                 |
+| D3: inverted labels for sorting by title          | `features/note-search/noteSearch.test.tsx`               |
+| D4: duplicate notes on creation                   | `pages/NoteEditPage/NoteEditPage.test.tsx`               |
+| D6: the "Settings" link without a route           | `app/routes/AppRoutes.test.tsx`                          |
+| D8: a blank screen on a note loading error        | `pages/NoteEditPage/NoteEditPage.test.tsx`               |
 
-## Znane zachowanie zestawu
+## Known suite behaviour
 
-- **Przeciążona maszyna:** przy bardzo dużym obciążeniu CPU vitest może zgłosić `Timeout calling "onTaskUpdate"`, zwykle przy teście D8, który celowo wywołuje crash aplikacji. To nie jest niestabilność testów: przy normalnym obciążeniu zestaw przechodzi stabilnie (sprawdzone wielokrotnie, ~11 s). Jeśli się zdarzy, powtórz przebieg.
-- **Fokus edytora:** edytor ustawia fokus na sobie asynchronicznie po zamontowaniu. Testy, które wpisują tytuł, najpierw czekają na fokus edytora (`editorFocused()`), inaczej tekst trafiłby do treści notatki.
+- **Overloaded machine:** under very heavy CPU load vitest can report `Timeout calling "onTaskUpdate"`, usually on the D8 test, which deliberately crashes the app. This is not test flakiness: under normal load the suite passes reliably (checked many times, ~11 s). If it happens, re-run.
+- **Editor focus:** the editor focuses itself asynchronously after mounting. Tests that type a title first wait for the editor focus (`editorFocused()`), otherwise the text would go into the note content.
 
-## Aktualizacja tego pliku
+## Updating this file
 
-Po większej zmianie uruchom `npm run test:coverage` i porównaj z tabelami powyżej. Każde nowe miejsce poniżej ~90% przypisz do kategorii A–E. Jeśli nie pasuje do żadnej, to po prostu brakuje testu.
+After a larger change, run `npm run test:coverage` and compare with the tables above. Assign every new spot below ~90% to a category A–E. If it does not fit any, a test is simply missing.
