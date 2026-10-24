@@ -21,7 +21,9 @@ export const setupErrorInterceptor = (
         ? (responseData.message ?? error.message ?? 'Unknown API error')
         : (error.message ?? 'Unknown API error');
 
-      const apiError = new ApiError(error.response?.status ?? 0, message, responseData);
+      const apiError = new ApiError(error.response?.status ?? 0, message, responseData, {
+        cause: error,
+      });
 
       if (apiError.status === 401 && !originalRequest._skipAuthRefresh) {
         return handle401Error({

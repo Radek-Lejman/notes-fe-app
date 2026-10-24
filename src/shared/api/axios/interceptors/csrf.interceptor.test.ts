@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createTestClient } from '../../../lib/test/axios';
 import { setupCsrfInterceptor } from './csrf.interceptor';
 import { setupErrorInterceptor } from './error.interceptor';
+import { ApiError } from '../lib/ApiError';
 
 const tokenSource = () => {
   let n = 0;
@@ -70,9 +71,8 @@ describe('CSRF interceptor', () => {
     await expect(client.post('/notes', {})).rejects.toMatchObject({ response: { status: 500 } });
   });
 
-  // Known defect D2 (docs/testing/unit-test-audit.md): the retry has no guard, so a 403 that is
-  // not about CSRF (AI_CREDENTIALS_REQUIRED) is retried forever. Remove `.fails` once fixed.
-  it.fails('retries a 403 at most once', async () => {
+  // Defect D2 (docs/testing/unit-test-audit.md): the retry had no guard and looped forever.
+  it('retries a 403 at most once', async () => {
     const { client, adapter } = createTestClient((config) => {
       if (adapter.mock.calls.length > 5) throw new Error('retry loop');
       return { status: config.url ? 403 : 200 };
@@ -83,15 +83,36 @@ describe('CSRF interceptor', () => {
     expect(adapter).toHaveBeenCalledTimes(2);
   });
 
-  // Known defect D1: in the app the error interceptor is registered first (client.ts) and turns
-  // the AxiosError into an ApiError without `.response`, so the CSRF 403 retry never runs.
-  // Remove `.fails` once fixed.
-  it.fails('retries a CSRF 403 when composed like the app (error interceptor first)', async () => {
+  it('does not retry a 403 the API explains with an error code', async () => {
+    const { client, adapter } = createTestClient(() => ({
+      status: 403,
+      data: { message: 'Connect your Claude account', code: 'AI_CREDENTIALS_REQUIRED' },
+    }));
+    const getCsrfToken = tokenSource();
+    setupCsrfInterceptor(client, { getCsrfToken });
+
+    await expect(client.post('/ai/chat', {})).rejects.toMatchObject({ response: { status: 403 } });
+    expect(adapter).toHaveBeenCalledOnce();
+    expect(getCsrfToken).toHaveBeenCalledOnce();
+  });
+
+  // Defect D1: in the app the error interceptor is registered first (client.ts) and turns the
+  // AxiosError into an ApiError, so the CSRF 403 retry never ran.
+  it('retries a CSRF 403 when composed like the app (error interceptor first)', async () => {
     let calls = 0;
     const { client } = createTestClient(() => ({ status: ++calls === 1 ? 403 : 200 }));
     setupErrorInterceptor(client);
     setupCsrfInterceptor(client, { getCsrfToken: tokenSource() });
 
     await expect(client.post('/notes', {})).resolves.toMatchObject({ status: 200 });
+  });
+
+  it('rejects with the ApiError when the retry fails too (error interceptor first)', async () => {
+    const { client, adapter } = createTestClient(() => ({ status: 403 }));
+    setupErrorInterceptor(client);
+    setupCsrfInterceptor(client, { getCsrfToken: tokenSource() });
+
+    await expect(client.post('/notes', {})).rejects.toBeInstanceOf(ApiError);
+    expect(adapter).toHaveBeenCalledTimes(2);
   });
 });

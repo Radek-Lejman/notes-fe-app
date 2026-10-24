@@ -1,7 +1,24 @@
 import { normalizeError } from '../../../lib/error';
-import type { AxiosInstance, InternalAxiosRequestConfig, AxiosError } from 'axios';
+import { isAxiosError, type AxiosInstance, type InternalAxiosRequestConfig } from 'axios';
 
 type GetTokenFn = () => Promise<{ csrfToken: string }>;
+
+/**
+ * The AxiosError behind a response error. An interceptor registered earlier (the error
+ * interceptor in client.ts) may already have turned it into an ApiError that keeps it as `cause`.
+ */
+const toAxiosError = (error: unknown) => {
+  if (isAxiosError(error)) return error;
+  if (error instanceof Error && isAxiosError(error.cause)) return error.cause;
+  return null;
+};
+
+/**
+ * csurf rejects with a plain 403; the API's own 403s (e.g. AI_CREDENTIALS_REQUIRED) carry a
+ * `code` and would fail again with a fresh token.
+ */
+const hasApiErrorCode = (data: unknown) =>
+  typeof data === 'object' && data !== null && 'code' in data;
 
 export const setupCsrfInterceptor = (
   client: AxiosInstance,
@@ -31,13 +48,23 @@ export const setupCsrfInterceptor = (
 
   client.interceptors.response.use(
     (res) => res,
-    async (error: AxiosError) => {
-      if (error.response?.status === 403) {
+    // An ApiError (error interceptor registered first) or an AxiosError (this one first).
+    async (error: Error) => {
+      const axiosError = toAxiosError(error);
+      const config = axiosError?.config;
+
+      if (
+        axiosError?.response?.status === 403 &&
+        config &&
+        !config._csrfRetry &&
+        !hasApiErrorCode(axiosError.response.data)
+      ) {
         const { csrfToken: newToken } = await options.getCsrfToken();
         csrfToken = newToken;
 
-        error.config!.headers['X-CSRF-Token'] = csrfToken!;
-        return client.request(error.config!);
+        config._csrfRetry = true;
+        config.headers['X-CSRF-Token'] = csrfToken;
+        return client.request(config);
       }
 
       return Promise.reject(error);
