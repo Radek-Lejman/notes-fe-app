@@ -9,6 +9,7 @@ import { DashboardLayout } from '@shared/ui/layouts/Dashboard/DashboardLayout';
 import { SidePanelWidget } from '@widgets/SidePanelWidget';
 import { WelcomePageContainer } from '@pages/WelcomePage';
 import { NoteEditPage } from '@pages/NoteEditPage';
+import { SettingsPage } from '@pages/SettingsPage';
 import { GlobalSearchWidget } from '@/widgets/GlobalSearchWidget';
 
 export const AppRoutes = () => {
@@ -38,6 +39,7 @@ export const AppRoutes = () => {
           <Route path="/" element={<WelcomePageContainer />} />
           <Route path="/note/:id" element={<NoteEditPage />} />
           <Route path="/note" element={<NoteEditPage />} />
+          <Route path="/settings" element={<SettingsPage />} />
         </Route>
       </Route>
     </Routes>

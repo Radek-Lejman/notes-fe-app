@@ -4,6 +4,7 @@ import { screen, within } from '@testing-library/react';
 import { createRoutesFromElements, matchRoutes } from 'react-router-dom';
 import { AuthApi } from '@entities/session';
 import { NotesApi } from '@entities/notes';
+import { AiChatApi, type AiSettings } from '@entities/ai-chat';
 import { ApiError } from '@shared/api';
 import { renderWithProviders } from '@shared/lib/test/render';
 import { AppRoutes } from './AppRoutes';
@@ -51,9 +52,27 @@ describe('AppRoutes', () => {
     expect(await screen.findByText('Create an account')).toBeInTheDocument();
   });
 
-  // Known defect D6 (docs/testing/unit-test-audit.md): the side panel links to /settings, but
-  // there is no such route. Remove `.fails` once the route exists or the link is removed.
-  it.fails('has a page for every link in the side panel', async () => {
+  it('opens the settings page with the AI settings', async () => {
+    loggedIn();
+    const settings: AiSettings = {
+      provider: 'claude',
+      model: 'claude-sonnet',
+      requiresAccount: false,
+      credential: null,
+      serverLoginAllowed: false,
+      ready: true,
+      rag: { enabled: false, embeddingModel: 'local', stats: null },
+    };
+    vi.spyOn(AiChatApi, 'getSettings').mockResolvedValue(settings);
+    renderWithProviders(<AppRoutes />, { route: '/settings' });
+
+    expect(await screen.findByRole('heading', { name: 'AI assistant' })).toBeInTheDocument();
+    expect(await screen.findByText(/Engine: claude/)).toBeInTheDocument();
+  });
+
+  // Defect D6 (docs/testing/unit-test-audit.md): the side panel linked to /settings, but there
+  // was no such route.
+  it('has a page for every link in the side panel', async () => {
     loggedIn();
     renderWithProviders(<AppRoutes />, { route: '/' });
     const panel = await screen.findByRole('complementary');
