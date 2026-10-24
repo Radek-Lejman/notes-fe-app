@@ -15,8 +15,8 @@ export const SEARCH_ORDER_OPTIONS: { value: NonNullable<SearchFilters['order']>;
     { value: '-updatedAt', label: 'Last Modified ↓' },
     { value: 'createdAt', label: 'Date Created ↑' },
     { value: '-createdAt', label: 'Date Created ↓' },
-    { value: 'title', label: 'Title Z-A' },
-    { value: '-title', label: 'Title A-Z' },
+    { value: 'title', label: 'Title A-Z' },
+    { value: '-title', label: 'Title Z-A' },
   ];
 
 export const SEARCH_LIMIT_OPTIONS = [10, 20, 30, 40, 50];

@@ -188,9 +188,9 @@ describe('search order options', () => {
     expect(values).toHaveLength(8);
   });
 
-  // Known defect D3 (docs/testing/unit-test-audit.md): BE sorts `title` ascending (A→Z) and
-  // `-title` descending, but the labels are swapped. Remove `.fails` once fixed.
-  it.fails('labels the title order in the direction the API sorts', () => {
+  // Defect D3 (docs/testing/unit-test-audit.md): BE sorts `title` ascending (A→Z) and `-title`
+  // descending; the labels used to be swapped.
+  it('labels the title order in the direction the API sorts', () => {
     expect(label('title')).toBe('Title A-Z');
     expect(label('-title')).toBe('Title Z-A');
   });
