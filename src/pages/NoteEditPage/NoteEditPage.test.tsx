@@ -166,10 +166,9 @@ describe('NoteEditPage — creating', () => {
     expect(await screen.findByText('Edit Note')).toBeInTheDocument();
   });
 
-  // Known defect D4: autosave keeps firing while the create request is in flight, and every
-  // save of the create page is a new POST, so slow responses produce duplicate notes.
-  // Remove `.fails` once fixed.
-  it.fails('creates the note only once while the first save is still in flight', async () => {
+  // Defect D4: autosave kept firing while the create request was in flight, and every save of
+  // the create page was a new POST, so slow responses produced duplicate notes.
+  it('creates the note only once while the first save is still in flight', async () => {
     vi.useFakeTimers({ shouldAdvanceTime: true });
     const create = vi.spyOn(NotesApi, 'createNote').mockReturnValue(new Promise(() => {}));
     renderPage('/note');
@@ -182,5 +181,33 @@ describe('NoteEditPage — creating', () => {
     await act(() => vi.advanceTimersByTimeAsync(1600));
 
     expect(create).toHaveBeenCalledOnce();
+  });
+
+  it('saves what was typed during the create request to the new note', async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    let resolveCreate: (note: Notes) => void = () => {};
+    const create = vi.spyOn(NotesApi, 'createNote').mockReturnValue(
+      new Promise((resolve) => {
+        resolveCreate = resolve;
+      }),
+    );
+    const update = vi
+      .spyOn(NotesApi, 'updateNote')
+      .mockResolvedValue({ ...NOTE, id: 'new-id', title: 'AB', content: '' });
+    renderPage('/note');
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+
+    await editorFocused();
+    await user.type(await titleInput(), 'A');
+    await act(() => vi.advanceTimersByTimeAsync(1600));
+    await user.type(await titleInput(), 'B');
+    await act(() => vi.advanceTimersByTimeAsync(1600));
+    act(() => resolveCreate({ ...NOTE, id: 'new-id', title: 'A', content: '' }));
+
+    expect(await screen.findByText('Edit Note')).toBeInTheDocument();
+    expect(await titleInput()).toHaveValue('AB');
+    expect(create).toHaveBeenCalledOnce();
+    expect(update).toHaveBeenCalledOnce();
+    expect(update.mock.calls[0][0]).toEqual({ id: 'new-id', title: 'AB', content: '' });
   });
 });
