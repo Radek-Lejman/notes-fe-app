@@ -4,6 +4,7 @@ import { SIDE_PANEL_NAV_ITEMS } from '../config/navigaton';
 import { SidePanelGuestContent } from './SidePanelGuestContent/SidePanelGuestContent';
 import { LoadingSpinner } from '@shared/ui/Spinner/Spinner';
 import { ShowOnlyUser } from '@features/auth';
+import { ImportNotesButton } from '@features/import-notes';
 import { SidePanel } from '@shared/ui/layouts/SidePanel';
 import { AsyncBoundary } from '@shared/ui/AsyncBoundary/AsyncBoundary';
 import { SidePanelWidgetNavItems } from './SidePanelWidgetNavigation/SidePanelWidgetNavigation';
@@ -26,7 +27,12 @@ export const SidePanelWidget = ({ searchSlot }: { searchSlot?: React.ReactNode }
 
         <SidePanel.Section>
           <ShowOnlyUser>
-            {() => <SidePanelWidgetNavItems items={SIDE_PANEL_NAV_ITEMS} />}
+            {() => (
+              <>
+                <SidePanelWidgetNavItems items={SIDE_PANEL_NAV_ITEMS} />
+                <ImportNotesButton />
+              </>
+            )}
           </ShowOnlyUser>
         </SidePanel.Section>
 
