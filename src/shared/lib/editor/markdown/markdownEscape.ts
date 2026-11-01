@@ -1,8 +1,8 @@
 import type { JSONContent } from '@tiptap/core';
 
 /*
- * KEEP IN SYNC with notes-app-be/src/modules/notes/utils/markdown/markdownEscape.ts
- * Both sides must escape identically, otherwise migrated notes differ from editor output.
+ * escapeInline: KEEP IN SYNC with notes-app-be/src/modules/notes/import/markdownEscape.ts
+ * (the import writes link text with it, which must read back as plain text here).
  *
  * @tiptap/markdown writes text nodes verbatim, so "# not a heading" typed by the user would
  * come back as a heading after a save/load round trip. We escape text before serializing.
