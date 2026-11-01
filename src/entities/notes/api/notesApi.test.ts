@@ -43,6 +43,15 @@ describe('NotesApi', () => {
     expect(patch).toHaveBeenCalledWith('/notes/n1', { title: 'Docker', content: '# Docker' });
   });
 
+  it('imports notes with a longer timeout than other requests', async () => {
+    const result = { dryRun: true, rootNoteId: null, created: 2, skipped: [], warnings: [] };
+    const post = vi.spyOn(apiClient, 'post').mockReturnValue(ok(result));
+    const payload = { files: [{ path: 'a.md', content: '# A' }], dryRun: true };
+
+    await expect(NotesApi.importNotes(payload)).resolves.toEqual(result);
+    expect(post).toHaveBeenCalledWith('/notes/import', payload, { timeout: 120_000 });
+  });
+
   it('sends search parameters as the query string', async () => {
     const get = vi.spyOn(apiClient, 'get').mockReturnValue(ok([]));
     const params = { q: 'docker', limit: 10, order: '-createdAt' as const, fields: 'title' };

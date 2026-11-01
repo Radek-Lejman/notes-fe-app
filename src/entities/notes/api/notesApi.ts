@@ -6,6 +6,10 @@ import type {
   CreateNoteDto,
   UpdateNoteDto,
 } from '../model/types';
+import type { ImportNotesDto, ImportResult } from '../model/import.types';
+
+// Up to 2000 notes written in one transaction, after uploading up to 25 MB.
+const IMPORT_TIMEOUT_MS = 2 * 60 * 1000;
 
 export const NotesApi = {
   getNotes: async (): Promise<Notes[]> => {
@@ -32,6 +36,13 @@ export const NotesApi = {
   searchNote: async (payload: SearchNotesParams): Promise<NoteSearchHit[]> => {
     const { data } = await apiClient.get<NoteSearchHit[]>('/notes/search', {
       params: payload,
+    });
+    return data;
+  },
+
+  importNotes: async (payload: ImportNotesDto): Promise<ImportResult> => {
+    const { data } = await apiClient.post<ImportResult>('/notes/import', payload, {
+      timeout: IMPORT_TIMEOUT_MS,
     });
     return data;
   },
