@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import { Dialog, Button } from '@chakra-ui/react';
 import { FaSearch } from 'react-icons/fa';
-import { NoteSearch } from '@/features/note-search';
+import { NoteSearch } from '@features/note-search';
 
 export function GlobalSearchWidget() {
   const [isOpen, setIsOpen] = useState(false);
