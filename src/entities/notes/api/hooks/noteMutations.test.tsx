@@ -7,6 +7,7 @@ import type { Notes } from '../../model/types';
 import { useCreateNote } from './useCreateNote';
 import { useUpdateNote } from './useUpdateNote';
 import { useSearchNotes } from './useSearchNotes';
+import { useImportNotes } from './useImportNotes';
 
 const note = (id: string, title: string): Notes => ({ id, title, createdAt: '2026-01-01' });
 
@@ -85,5 +86,29 @@ describe('useSearchNotes', () => {
 
     await waitFor(() => expect(result.current.data).toEqual(hits));
     expect(search).toHaveBeenCalledWith({ q: 'docker', limit: 5 });
+  });
+});
+
+describe('useImportNotes', () => {
+  const result = (dryRun: boolean) => ({
+    dryRun,
+    rootNoteId: dryRun ? null : 'root',
+    created: 2,
+    skipped: [],
+    warnings: [],
+  });
+  const files = [{ path: 'a.md', content: 'a' }];
+
+  it.each([
+    [false, true],
+    [true, false],
+  ])('dryRun %s → refreshes the notes: %s', async (dryRun, refreshed) => {
+    vi.spyOn(NotesApi, 'importNotes').mockResolvedValue(result(dryRun));
+    const { result: hook, queryClient } = renderHookWithProviders(() => useImportNotes());
+    queryClient.setQueryData(noteKeys.notes.list(), [note('n1', 'Docker')]);
+
+    await act(() => hook.current.mutateAsync({ files, dryRun }));
+
+    expect(queryClient.getQueryState(noteKeys.notes.list())?.isInvalidated).toBe(refreshed);
   });
 });

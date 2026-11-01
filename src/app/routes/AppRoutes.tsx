@@ -10,7 +10,7 @@ import { SidePanelWidget } from '@widgets/SidePanelWidget';
 import { WelcomePageContainer } from '@pages/WelcomePage';
 import { NoteEditPage } from '@pages/NoteEditPage';
 import { SettingsPage } from '@pages/SettingsPage';
-import { GlobalSearchWidget } from '@/widgets/GlobalSearchWidget';
+import { GlobalSearchWidget } from '@widgets/GlobalSearchWidget';
 
 export const AppRoutes = () => {
   return (

@@ -1,6 +1,6 @@
 import { Extension, type Editor } from '@tiptap/core';
 import { Plugin, PluginKey, TextSelection } from '@tiptap/pm/state';
-import { noteIdFromHref } from '../link';
+import { isOpenableHref, noteIdFromHref } from '../link';
 
 export const EDITOR_UI_META = 'editorUi';
 const pluginKey = new PluginKey(EDITOR_UI_META);
@@ -169,7 +169,7 @@ export const EditorUi = Extension.create<EditorUiOptions, EditorUiStorage>({
           if (!dispatch) return true;
           const noteId = noteIdFromHref(href);
           if (noteId && this.options.onOpenNote) this.options.onOpenNote(noteId);
-          else window.open(href, '_blank', 'noopener,noreferrer');
+          else if (isOpenableHref(href)) window.open(href, '_blank', 'noopener,noreferrer');
           return true;
         },
     };

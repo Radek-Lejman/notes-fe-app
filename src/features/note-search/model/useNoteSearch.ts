@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
-import { useSearchNotes } from '@/entities/notes';
-import { useDebounce } from '@/shared/lib/hooks/useDebounce';
+import { useSearchNotes } from '@entities/notes';
+import { useDebounce } from '@shared/lib/hooks/useDebounce';
 import type { SearchFilters } from '../model/types';
 import { DEFAULT_SEARCH_FILTERS } from '../config/constants';
 

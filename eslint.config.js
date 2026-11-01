@@ -8,6 +8,22 @@ import featureSliced from '@conarti/eslint-plugin-feature-sliced'
 import prettierConfig from 'eslint-config-prettier'
 import vitest from '@vitest/eslint-plugin'
 
+const RESTRICTED_IMPORTS = {
+  paths: [
+    {
+      name: 'axios',
+      message: 'Requests go through apiClient from @shared/api (CSRF, refresh on 401).',
+      allowTypeImports: true,
+    },
+  ],
+  patterns: [
+    {
+      group: ['@/*'],
+      message: 'Use the layer alias (@shared, @entities, @features, …) so the FSD rules see the layer.',
+    },
+  ],
+}
+
 export default tseslint.config(
   { ignores: ['dist'] },
   {
@@ -49,6 +65,23 @@ export default tseslint.config(
       'feature-sliced/layers-slices': 'error',
       'feature-sliced/absolute-relative': 'error',
       'feature-sliced/public-api': 'error',
+    },
+  },
+  {
+    // Import boundaries beyond the FSD layers.
+    files: ['src/**/*.{ts,tsx}'],
+    rules: {
+      '@typescript-eslint/no-restricted-imports': ['error', RESTRICTED_IMPORTS],
+    },
+  },
+  {
+    // The HTTP client itself and its test helper are the only places that use axios directly.
+    files: ['src/shared/api/**', 'src/shared/lib/test/**'],
+    rules: {
+      '@typescript-eslint/no-restricted-imports': [
+        'error',
+        { patterns: RESTRICTED_IMPORTS.patterns },
+      ],
     },
   },
   {

@@ -34,6 +34,7 @@ Enforced by `@conarti/eslint-plugin-feature-sliced` (`layers-slices`, `absolute-
 - Every slice exports its public API from `index.ts`. Import from outside only through it (`@features/auth`), never deep (`@features/auth/ui/LoginForm`).
 - `shared/` knows no domain: nothing about notes, users or auth in `shared/ui`; domain UI goes to `entities/*/ui` or `features/*/ui`.
 - Aliases: `@app @pages @widgets @features @entities @shared` (`tsconfig.app.json` and `vite.config.ts` — change both).
+- Beyond the layers (`eslint.config.js`, `no-restricted-imports`): `axios` only in `src/shared/api` (everything else uses `apiClient`), no `@/` alias — the layer aliases only.
 
 ## Conventions
 
@@ -43,6 +44,19 @@ Enforced by `@conarti/eslint-plugin-feature-sliced` (`layers-slices`, `absolute-
 - Tests `*.test.ts(x)` next to the file; helpers in `src/shared/lib/test/` (`render.tsx`, `axios.ts`, `editor.ts`). Known defects as `it.fails` (see `docs/testing/README.md`).
 - TypeScript is `strict`; `no-explicit-any`, `no-floating-promises`, `no-misused-promises`, `consistent-type-imports` are errors.
 - Conventional commits, small commits.
+
+## Code quality
+
+Before writing new code:
+
+- **Reuse first (DRY).** Search for an existing function, hook, component, constant or type before adding one: `grep -rn` the name *and* the behaviour (the regex, the API path, the error message). Reuse or extend it. A second copy of the same logic needs a reason stated in your reply; deliberate copies across the two repos are marked `KEEP IN SYNC`.
+- **KISS.** The simplest code that solves today's problem: no abstractions, options or layers "for later". Early returns instead of nested ternaries (at most one `?:` per expression). Derive values instead of keeping them in extra state or fields.
+- **Single responsibility (SOLID).** One file does one thing (a component, a hook, a group of pure helpers; fetching, transforming and rendering are separate). A function does one thing at one level of abstraction. Extend by adding a new implementation or a map entry, not another `if` on a type; depend on props and slice public APIs, not on another slice's internals.
+- **No catch-all files.** `types.ts`, `consts.ts`, `utils.ts` hold one concept, not everything a slice needs. Before adding to such a file, check that the new code belongs to the concept the file already describes; a second concept gets its own file named after it (`model/types.ts` for notes, `model/import.types.ts` for the import contract; `model/importStep.ts` next to the hook that uses it). Only types and constants go to `types` files: a class (an error) lives with the code that throws it, a function in `lib/`. The same applies when a slice's `index.ts` or a `config/` file starts collecting unrelated exports.
+- **Size limits** (tests and fixtures excluded): a file over **150 lines** → consider splitting, over **250** → split it or justify it in your reply; a function over **40 lines** → extract steps; more than **3 parameters** → one options object. JSX nested deeper than ~4 levels → a subcomponent.
+- **Named constants, no magic values.** Statuses, kinds and modes are a `const` object with the type derived from it (`as const` + `ValueOf<typeof X>` from `@shared/lib/utils/types`; TS `enum` is blocked by `erasableSyntaxOnly`); compare against `STATUS.member`, not a string literal. Limits and timeouts are named constants with a comment on why that value.
+- **Names say what, comments say why** (not what the next line does). No commented-out code, no dead exports.
+- **Tests come with the code:** new logic gets a test next to it; a bug fix gets a test that fails without the fix.
 
 ## Rules
 
@@ -57,6 +71,7 @@ Tag: **[enforced: …]** = a tool blocks it; **[described]** = only this file.
 - Changing `CLAUDE.md`, `.claude/**`, `.husky/**`, `.github/**`, `eslint.config.js` needs the user's consent. [enforced: Claude hook asks]
 - New dependency only with a stated reason in your reply. [described]
 - Finishing a turn with code changes runs `npm run verify` (Stop hook) — a red result sends you back; if you cannot fix it, say so plainly instead of claiming success. [enforced: Claude Stop hook]
+- HTTP only through `apiClient` (`@shared/api`); imports through the layer aliases, never `@/`. [enforced: eslint]
 
 ## Git
 

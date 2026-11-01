@@ -7,4 +7,6 @@ export * from './api/hooks/useSearchNote';
 export * from './api/hooks/useCreateNote';
 export * from './api/hooks/useUpdateNote';
 export * from './model/types';
+export * from './model/import.types';
 export * from './api/hooks/useSearchNotes';
+export * from './api/hooks/useImportNotes';

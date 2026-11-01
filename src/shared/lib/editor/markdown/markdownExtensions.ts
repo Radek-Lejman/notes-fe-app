@@ -12,8 +12,6 @@ import type { MarkdownManager } from '@tiptap/markdown';
 import { escapeInline, escapeMarkdownDoc, unescapeMarkdown } from './markdownEscape';
 
 /*
- * KEEP IN SYNC with notes-app-be/src/modules/notes/utils/markdown/markdownExtensions.ts
- *
  * Fixes on top of @tiptap/markdown so that save -> load is lossless:
  * - escaped characters (`\*`) are dropped by the parser -> MarkdownEscape parses them as text
  * - hard breaks are written as trailing double spaces, which editors strip -> `\` + newline

@@ -1,9 +1,15 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient, type UseQueryOptions } from '@tanstack/react-query';
 import { AiChatApi } from '../aiChatApi';
 import { aiKeys } from '../aiKeys';
+import type { AiSettings } from '../../model/types';
 
-export const useAiSettings = () =>
-  useQuery({ queryKey: aiKeys.settings(), queryFn: AiChatApi.getSettings });
+type AiSettingsQueryOptions = Pick<
+  UseQueryOptions<AiSettings, Error, AiSettings, ReturnType<typeof aiKeys.settings>>,
+  'refetchInterval'
+>;
+
+export const useAiSettings = (options: AiSettingsQueryOptions = {}) =>
+  useQuery({ queryKey: aiKeys.settings(), queryFn: AiChatApi.getSettings, ...options });
 
 export const useSaveAiCredential = () => {
   const client = useQueryClient();
