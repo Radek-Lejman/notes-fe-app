@@ -9,6 +9,21 @@ export const noteIdFromHref = (href: string): string | null => NOTE_HREF.exec(hr
 
 export const noteHref = (noteId: string) => `/notes/${noteId}`;
 
+const ANY_SCHEME = /^[a-z][a-z\d+.-]*:/i;
+const OPENABLE_SCHEME = /^(?:https?|mailto):/i;
+
+/**
+ * Whether a link may be opened: http(s), mailto, a path or an anchor (relative to the app).
+ * `javascript:` and other schemes can come with pasted or imported markdown; whitespace and
+ * controls are ignored the way browsers ignore them in a URL, so `java\tscript:` is caught too.
+ */
+export const isOpenableHref = (href: string): boolean => {
+  // eslint-disable-next-line no-control-regex -- browsers drop these characters from URLs
+  const url = href.replace(/[\u0000-\u0020\u007f]/g, '');
+  // Without a scheme it is a path or an anchor, resolved against the app.
+  return ANY_SCHEME.test(url) ? OPENABLE_SCHEME.test(url) : url.length > 0;
+};
+
 /**
  * Turns what the user typed into an href: `example.com` -> `https://example.com`,
  * `a@b.pl` -> `mailto:a@b.pl`. URLs with a scheme, absolute paths and anchors are kept.

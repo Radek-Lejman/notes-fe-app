@@ -2,7 +2,7 @@ import { afterAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Editor } from '@tiptap/core';
 import { AllSelection, NodeSelection, TextSelection } from '@tiptap/pm/state';
 import { createMarkdownExtensions, getEditorMarkdown, SafeMarkdown } from '../markdown';
-import { applyLink, normalizeUrl, removeLink } from '../link';
+import { applyLink, isOpenableHref, normalizeUrl, removeLink } from '../link';
 import { EditorUi, getSelectionMenuMode } from './EditorUi';
 
 const onSave = vi.fn();
@@ -180,5 +180,34 @@ describe('normalizeUrl', () => {
 
   it('returns null for an empty value', () => {
     expect(normalizeUrl('   ')).toBeNull();
+  });
+});
+
+describe('isOpenableHref', () => {
+  it.each([
+    ['https://example.com', true],
+    ['HTTP://example.com', true],
+    ['mailto:a@b.pl', true],
+    ['/notes/123', true],
+    ['#section', true],
+    ['javascript:alert(1)', false],
+    [' JavaScript:alert(1)', false],
+    ['java\tscript:alert(1)', false],
+    ['data:text/html,<script>alert(1)</script>', false],
+    ['vbscript:x', false],
+    ['', false],
+  ])('%j -> %s', (href, expected) => {
+    expect(isOpenableHref(href)).toBe(expected);
+  });
+
+  it('opens a safe link in a new tab and ignores an unsafe one', () => {
+    const open = vi.spyOn(window, 'open').mockReturnValue(null);
+
+    editor.commands.openLink('javascript:alert(1)');
+    expect(open).not.toHaveBeenCalled();
+
+    editor.commands.openLink('https://example.com');
+    expect(open).toHaveBeenCalledWith('https://example.com', '_blank', 'noopener,noreferrer');
+    open.mockRestore();
   });
 });
